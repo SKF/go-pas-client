@@ -6,7 +6,7 @@
 
 run:
   skip-dirs:
-    - models/
+    - internal/models/
   skip-files: []
 
 # all available settings of specific linters
