@@ -31,7 +31,7 @@ jobs:
       - name: Generate models
         run: make internal/models
 
-      - name: Check changes
+      - name: Check uncommitted changes
         run: |
           git update-index --refresh
-          git diff-index HEAD --
+          git diff-index --quiet HEAD --

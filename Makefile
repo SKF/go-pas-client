@@ -11,7 +11,6 @@ GOSWAGGER_VERSION := v0.29.0
 
 swagger.json:
 	$(WGET) "$(API_URL)/docs/swagger/doc.json" -O "$@"
-	./scripts/patch-basepath.sh "$@"
 
 internal/models: swagger.json
 	$(RM) -rf "$@" && $(MKDIR) -p "$@"
