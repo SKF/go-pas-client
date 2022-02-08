@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean internal/models
 .INTERMEDIATE: swagger.json
 
 RM     ?= rm
