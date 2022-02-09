@@ -27,3 +27,9 @@ jobs:
 
       - name: Run unit tests
         run: go test -v -coverprofile=coverage.out -covermode=count ./...
+
+      - name: Check uncommitted changes
+        run: |
+          make internal/models
+          git update-index --refresh
+          git diff-index --quiet HEAD --

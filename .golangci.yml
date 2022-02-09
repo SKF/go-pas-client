@@ -5,7 +5,8 @@
 # goimports -w -local github.com/SKF/go-pas-client <file>
 
 run:
-  skip-dirs: []
+  skip-dirs:
+    - internal/models/
   skip-files: []
 
 # all available settings of specific linters
