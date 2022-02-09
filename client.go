@@ -7,11 +7,13 @@ import (
 	"github.com/SKF/go-utility/v2/stages"
 )
 
-type Client interface{}
+type API interface{}
 
-type client struct {
+type Client struct {
 	*rest.Client
 }
+
+var _ API = &Client{Client: nil}
 
 func WithStage(stage string) rest.Option {
 	if stage == stages.StageProd {
@@ -21,7 +23,7 @@ func WithStage(stage string) rest.Option {
 	return rest.WithBaseURL(fmt.Sprintf("https://api.point-alarm-status.%s.iot.enlight.skf.com/v1", stage))
 }
 
-func New(opts ...rest.Option) Client {
+func New(opts ...rest.Option) *Client {
 	restClient := rest.NewClient(
 		append([]rest.Option{
 			// Defaults to production stage if no option is supplied
@@ -29,5 +31,5 @@ func New(opts ...rest.Option) Client {
 		}, opts...)...,
 	)
 
-	return &client{Client: restClient}
+	return &Client{restClient}
 }
