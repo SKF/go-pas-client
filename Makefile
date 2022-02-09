@@ -20,6 +20,3 @@ internal/models: swagger.json
 		--user "$(shell id -u):$(shell id -g)" \
 		quay.io/goswagger/swagger:${GOSWAGGER_VERSION} \
 			generate model --spec="$<" --target="$(@D)"
-
-clean:
-	$(RM) -rf models
