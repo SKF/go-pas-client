@@ -3,7 +3,6 @@ module github.com/SKF/go-pas-client
 go 1.17
 
 require (
-	github.com/SKF/go-utility/v2 v2.25.3
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/go-openapi/swag v0.21.1
