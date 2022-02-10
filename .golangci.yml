@@ -7,7 +7,8 @@
 run:
   skip-dirs:
     - internal/models/
-  skip-files: []
+  skip-files:
+    - _test.go
 
 # all available settings of specific linters
 linters-settings:
@@ -138,6 +139,6 @@ linters:
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code [fast: false, auto-fix: false]
     - unused # (megacheck): Checks Go code for unused constants, variables, functions and types [fast: false, auto-fix: false]
     - varcheck # Finds unused global variables and constants [fast: false, auto-fix: false]
-    - varnamelen # checks that the length of a variable's name matches its scope [fast: false, auto-fix: false]
+      # - varnamelen # checks that the length of a variable's name matches its scope [fast: false, auto-fix: false]
     - wastedassign # wastedassign finds wasted assignment statements. [fast: false, auto-fix: false]
     - wrapcheck # Checks that errors returned from external packages are wrapped [fast: false, auto-fix: false]
