@@ -9,6 +9,7 @@ require (
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/go-openapi/swag v0.21.1
 	github.com/go-openapi/validate v0.20.3
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
@@ -24,6 +25,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.2.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0 // indirect
 	github.com/aws/smithy-go v1.10.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a // indirect
 	github.com/go-openapi/analysis v0.20.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
@@ -43,6 +45,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/tinylib/msgp v1.1.2 // indirect
 	go.mongodb.org/mongo-driver v1.7.5 // indirect
 	go.opencensus.io v0.23.0 // indirect
