@@ -78,13 +78,9 @@ func (t *Threshold) ToInternal() models.ModelsSetPointAlarmThresholdRequest {
 		Overall:       t.Overall.ToInternal(),
 		RateOfChange:  t.RateOfChange.ToInternal(),
 		Inspection:    t.Inspection.ToInternal(),
-		FullScale:     0,
+		FullScale:     t.FullScale,
 		BandAlarms:    make([]*models.ModelsBandAlarm, len(t.BandAlarms)),
 		HalAlarms:     make([]*models.ModelsHALAlarm, len(t.HALAlarms)),
-	}
-
-	if t.FullScale != nil {
-		threshold.FullScale = *t.FullScale
 	}
 
 	for i, bandAlarm := range t.BandAlarms {

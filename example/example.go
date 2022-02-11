@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	dd_http "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 
 	pas "github.com/SKF/go-pas-client"
+	"github.com/SKF/go-pas-client/models"
 	"github.com/SKF/go-rest-utility/client"
 	"github.com/SKF/go-rest-utility/client/auth"
 	"github.com/SKF/go-utility/v2/stages"
@@ -36,15 +38,68 @@ func main() {
 		panic(err)
 	}
 
-	threshold, err := client.GetThreshold(context.Background(), nodeID)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	set(ctx, client, nodeID)
+
+	fmt.Println("The treshold:")
+	get(ctx, client, nodeID)
+
+	fmt.Println("The patched treshold:")
+	patch(ctx, client, nodeID)
+}
+
+func print(threshold models.Threshold) {
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetIndent("", "  ")
+
+	encoder.Encode(threshold)
+	fmt.Println()
+}
+
+func set(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	var (
+		outerHigh = 70.0
+		innerHigh = 50.0
+		innerLow  = 20.0
+		outerLow  = 10.0
+	)
+
+	err := client.SetThreshold(ctx, nodeID, models.Threshold{
+		ThresholdType: models.ThresholdTypeOverallOutOfWindow,
+		Overall: &models.Overall{
+			Unit:      "C",
+			OuterHigh: &outerHigh,
+			InnerHigh: &innerHigh,
+			InnerLow:  &innerLow,
+			OuterLow:  &outerLow,
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+func patch(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	patch := models.Patch{
+		{Type: "test", Path: "/overall/outerHigh", Value: 70},
+		{Type: "replace", Path: "/overall/outerHigh", Value: 80},
+	}
+
+	threshold, err := client.PatchThreshold(ctx, nodeID, patch)
 	if err != nil {
 		panic(err)
 	}
 
-	buf, err := json.MarshalIndent(threshold, "", "  ")
+	print(threshold)
+}
+
+func get(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	threshold, err := client.GetThreshold(ctx, nodeID)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(string(buf))
+	print(threshold)
 }

@@ -385,7 +385,7 @@ func Test_Threshold_ToInternal(t *testing.T) {
 			},
 			expected: models.ModelsSetPointAlarmThresholdRequest{
 				ThresholdType: i32p(0),
-				FullScale:     0.5,
+				FullScale:     f64p(0.5),
 				BandAlarms:    []*models.ModelsBandAlarm{},
 				HalAlarms:     []*models.ModelsHALAlarm{},
 			},
