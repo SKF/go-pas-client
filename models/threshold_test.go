@@ -11,18 +11,6 @@ import (
 	"github.com/SKF/go-utility/v2/uuid"
 )
 
-func f64p(f float64) *float64 {
-	return &f
-}
-
-func i32p(i int32) *int32 {
-	return &i
-}
-
-func stringp(s string) *string {
-	return &s
-}
-
 func Test_ThresholdFromInternal(t *testing.T) {
 	t.Parallel()
 

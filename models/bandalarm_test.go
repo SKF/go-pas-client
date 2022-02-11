@@ -410,19 +410,35 @@ func Test_BandAlarm_ToInternal_IsNil(t *testing.T) {
 	})
 }
 
-func Test_BandAlarmFrequency_FromInternal_IsNil(t *testing.T) {
+func Test_BandAlarmFrequency_FromInternalThreshold_IsNil(t *testing.T) {
 	t.Parallel()
 
 	assert.NotPanics(t, func() {
 		var frequency *BandAlarmFrequency
 
-		frequency.FromInternal(&models.ModelsBandAlarmFrequency{})
+		frequency.FromInternalThreshold(&models.ModelsBandAlarmFrequency{})
 	})
 
 	assert.NotPanics(t, func() {
 		frequency := &BandAlarmFrequency{}
 
-		frequency.FromInternal(nil)
+		frequency.FromInternalThreshold(nil)
+	})
+}
+
+func Test_BandAlarmFrequency_FromInternalAlarmStatus_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var frequency *BandAlarmFrequency
+
+		frequency.FromInternalAlarmStatus(&models.ModelsGetAlarmStatusResponseFrequency{})
+	})
+
+	assert.NotPanics(t, func() {
+		frequency := &BandAlarmFrequency{}
+
+		frequency.FromInternalAlarmStatus(nil)
 	})
 }
 
