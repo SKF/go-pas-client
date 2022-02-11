@@ -39,8 +39,8 @@ func (b *BandAlarm) FromInternal(internal *models.ModelsBandAlarm) {
 		b.OverallThreshold.FromInternal(internal.OverallThreshold)
 	}
 
-	b.MinFrequency.FromInternal(internal.MinFrequency)
-	b.MaxFrequency.FromInternal(internal.MaxFrequency)
+	b.MinFrequency.FromInternalThreshold(internal.MinFrequency)
+	b.MaxFrequency.FromInternalThreshold(internal.MaxFrequency)
 }
 
 func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
@@ -56,7 +56,21 @@ func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
 	}
 }
 
-func (f *BandAlarmFrequency) FromInternal(internal *models.ModelsBandAlarmFrequency) {
+func (f *BandAlarmFrequency) FromInternalThreshold(internal *models.ModelsBandAlarmFrequency) {
+	if f == nil || internal == nil {
+		return
+	}
+
+	if internal.ValueType != nil {
+		f.ValueType = BandAlarmFrequencyValueType(*internal.ValueType)
+	}
+
+	if internal.Value != nil {
+		f.Value = *internal.Value
+	}
+}
+
+func (f *BandAlarmFrequency) FromInternalAlarmStatus(internal *models.ModelsGetAlarmStatusResponseFrequency) {
 	if f == nil || internal == nil {
 		return
 	}
