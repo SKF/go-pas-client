@@ -1,6 +1,8 @@
 package models
 
-import models "github.com/SKF/go-pas-client/internal/models"
+import (
+	models "github.com/SKF/go-pas-client/internal/models"
+)
 
 type (
 	HALAlarm struct {
@@ -33,4 +35,27 @@ func (h *HALAlarm) FromInternal(internal *models.ModelsHALAlarm) {
 			ModelNumber:  *internal.Bearing.ModelNumber,
 		}
 	}
+}
+
+func (h *HALAlarm) ToInternal() *models.ModelsHALAlarm {
+	if h == nil {
+		return nil
+	}
+
+	halAlarm := &models.ModelsHALAlarm{
+		Label:        h.Label,
+		HalAlarmType: string(h.HALAlarmType),
+		UpperAlert:   h.UpperAlert,
+		UpperDanger:  h.UpperDanger,
+		Bearing:      nil,
+	}
+
+	if h.Bearing != nil {
+		halAlarm.Bearing = &models.ModelsBearing{
+			Manufacturer: &h.Bearing.Manufacturer,
+			ModelNumber:  &h.Bearing.ModelNumber,
+		}
+	}
+
+	return halAlarm
 }

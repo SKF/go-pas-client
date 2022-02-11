@@ -21,3 +21,17 @@ func (o *Overall) FromInternal(internal *models.ModelsOverall) {
 	o.InnerLow = internal.InnerLow
 	o.OuterLow = internal.OuterLow
 }
+
+func (o *Overall) ToInternal() *models.ModelsOverall {
+	if o == nil {
+		return nil
+	}
+
+	return &models.ModelsOverall{
+		Unit:      o.Unit,
+		OuterHigh: o.OuterHigh,
+		InnerHigh: o.InnerHigh,
+		InnerLow:  o.InnerLow,
+		OuterLow:  o.OuterLow,
+	}
+}

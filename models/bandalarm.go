@@ -39,24 +39,47 @@ func (b *BandAlarm) FromInternal(internal *models.ModelsBandAlarm) {
 		b.OverallThreshold.FromInternal(internal.OverallThreshold)
 	}
 
-	if internal.MaxFrequency != nil {
-		if internal.MaxFrequency.ValueType != nil {
-			b.MaxFrequency.ValueType = BandAlarmFrequencyValueType(*internal.MaxFrequency.ValueType)
-		}
+	b.MinFrequency.FromInternal(internal.MinFrequency)
+	b.MaxFrequency.FromInternal(internal.MaxFrequency)
+}
 
-		if internal.MaxFrequency.Value != nil {
-			b.MaxFrequency.Value = *internal.MaxFrequency.Value
-		}
+func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
+	if b == nil {
+		return nil
 	}
 
-	if internal.MinFrequency != nil {
-		if internal.MinFrequency.ValueType != nil {
-			b.MinFrequency.ValueType = BandAlarmFrequencyValueType(*internal.MinFrequency.ValueType)
-		}
+	return &models.ModelsBandAlarm{
+		Label:            b.Label,
+		OverallThreshold: b.OverallThreshold.ToInternal(),
+		MinFrequency:     b.MinFrequency.ToInternal(),
+		MaxFrequency:     b.MaxFrequency.ToInternal(),
+	}
+}
 
-		if internal.MinFrequency.Value != nil {
-			b.MinFrequency.Value = *internal.MinFrequency.Value
-		}
+func (f *BandAlarmFrequency) FromInternal(internal *models.ModelsBandAlarmFrequency) {
+	if f == nil || internal == nil {
+		return
+	}
+
+	if internal.ValueType != nil {
+		f.ValueType = BandAlarmFrequencyValueType(*internal.ValueType)
+	}
+
+	if internal.Value != nil {
+		f.Value = *internal.Value
+	}
+}
+
+func (f *BandAlarmFrequency) ToInternal() *models.ModelsBandAlarmFrequency {
+	if f == nil {
+		return nil
+	}
+
+	valueType := int32(f.ValueType)
+
+	return &models.ModelsBandAlarmFrequency{
+		ValueType: &valueType,
+		Value:     &f.Value,
 	}
 }
 
@@ -68,32 +91,51 @@ func (b *BandAlarmOverallThreshold) FromInternal(internal *models.ModelsBandAlar
 	b.Unit = internal.Unit
 
 	if internal.UpperAlert != nil {
-		b.UpperAlert = &BandAlarmThreshold{
-			ValueType: BandAlarmThresholdTypeUnknown,
-			Value:     0,
-		}
-
-		if internal.UpperAlert.ValueType != nil {
-			b.UpperAlert.ValueType = BandAlarmThresholdType(*internal.UpperAlert.ValueType)
-		}
-
-		if internal.UpperAlert.Value != nil {
-			b.UpperAlert.Value = *internal.UpperAlert.Value
-		}
+		b.UpperAlert = new(BandAlarmThreshold)
+		b.UpperAlert.FromInternal(internal.UpperAlert)
 	}
 
 	if internal.UpperDanger != nil {
-		b.UpperDanger = &BandAlarmThreshold{
-			ValueType: BandAlarmThresholdTypeUnknown,
-			Value:     0,
-		}
+		b.UpperDanger = new(BandAlarmThreshold)
+		b.UpperDanger.FromInternal(internal.UpperDanger)
+	}
+}
 
-		if internal.UpperDanger.ValueType != nil {
-			b.UpperDanger.ValueType = BandAlarmThresholdType(*internal.UpperDanger.ValueType)
-		}
+func (b *BandAlarmOverallThreshold) ToInternal() *models.ModelsBandAlarmOverallThreshold {
+	if b == nil {
+		return nil
+	}
 
-		if internal.UpperDanger.Value != nil {
-			b.UpperDanger.Value = *internal.UpperDanger.Value
-		}
+	return &models.ModelsBandAlarmOverallThreshold{
+		Unit:        b.Unit,
+		UpperAlert:  b.UpperAlert.ToInternal(),
+		UpperDanger: b.UpperDanger.ToInternal(),
+	}
+}
+
+func (t *BandAlarmThreshold) FromInternal(internal *models.ModelsBandAlarmThreshold) {
+	if t == nil || internal == nil {
+		return
+	}
+
+	if internal.ValueType != nil {
+		t.ValueType = BandAlarmThresholdType(*internal.ValueType)
+	}
+
+	if internal.Value != nil {
+		t.Value = *internal.Value
+	}
+}
+
+func (t *BandAlarmThreshold) ToInternal() *models.ModelsBandAlarmThreshold {
+	if t == nil {
+		return nil
+	}
+
+	valueType := int32(t.ValueType)
+
+	return &models.ModelsBandAlarmThreshold{
+		ValueType: &valueType,
+		Value:     &t.Value,
 	}
 }

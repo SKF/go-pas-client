@@ -81,6 +81,78 @@ func Test_ThresholdFromInternal(t *testing.T) {
 		},
 		{
 			given: models.ModelsGetPointAlarmThresholdResponse{
+				ThresholdType: i32p(2), // overall out of window
+				Overall: &models.ModelsOverall{
+					Unit:      "gE",
+					OuterHigh: f64p(4),
+					InnerHigh: f64p(3),
+					InnerLow:  f64p(2),
+					OuterLow:  f64p(1),
+				},
+			},
+			expected: &Threshold{
+				ThresholdType: ThresholdTypeOverallOutOfWindow,
+				Overall: &Overall{
+					Unit:      "gE",
+					OuterHigh: f64p(4),
+					InnerHigh: f64p(3),
+					InnerLow:  f64p(2),
+					OuterLow:  f64p(1),
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+		},
+		{
+			given: models.ModelsGetPointAlarmThresholdResponse{
+				RateOfChange: &models.ModelsRateOfChange{
+					Unit:      "gE",
+					OuterHigh: f64p(2),
+					InnerHigh: f64p(1),
+					InnerLow:  f64p(-1),
+					OuterLow:  f64p(-2),
+				},
+			},
+			expected: &Threshold{
+				RateOfChange: &RateOfChange{
+					Unit:      "gE",
+					OuterHigh: f64p(2),
+					InnerHigh: f64p(1),
+					InnerLow:  f64p(-1),
+					OuterLow:  f64p(-2),
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+		},
+		{
+			given: models.ModelsGetPointAlarmThresholdResponse{
+				Inspection: &models.ModelsInspection{
+					Choices: []*models.ModelsInspectionChoice{
+						{
+							Answer:      "good",
+							Instruction: "good?",
+							Status:      i32p(2),
+						},
+					},
+				},
+			},
+			expected: &Threshold{
+				Inspection: &Inspection{
+					Choices: []InspectionChoice{
+						{
+							Answer:      "good",
+							Instruction: "good?",
+							Status:      AlarmStatusGood,
+						},
+					},
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+		},
+		{
+			given: models.ModelsGetPointAlarmThresholdResponse{
 				BandAlarms: []*models.ModelsBandAlarm{
 					{},
 				},
@@ -144,4 +216,216 @@ func Test_ThresholdFromInternal_invalidNodeID(t *testing.T) {
 	})
 
 	assert.Error(t, err)
+}
+
+func Test_Threshold_ToInternal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given    *Threshold
+		expected models.ModelsSetPointAlarmThresholdRequest
+	}{
+		{
+			given: &Threshold{
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms:     []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				ThresholdType: ThresholdTypeOverallInWindow,
+				BandAlarms:    []BandAlarm{},
+				HALAlarms:     []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(1), // overall in window
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms:     []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				ThresholdType: ThresholdTypeOverallOutOfWindow,
+				BandAlarms:    []BandAlarm{},
+				HALAlarms:     []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(2), // overall out of window
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms:     []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				ThresholdType: ThresholdTypeInspection,
+				BandAlarms:    []BandAlarm{},
+				HALAlarms:     []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(3), // inspection
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms:     []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				ThresholdType: ThresholdTypeOverallOutOfWindow,
+				Overall: &Overall{
+					Unit:      "gE",
+					OuterHigh: f64p(4),
+					InnerHigh: f64p(3),
+					InnerLow:  f64p(2),
+					OuterLow:  f64p(1),
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(2), // overall out of window
+				Overall: &models.ModelsOverall{
+					Unit:      "gE",
+					OuterHigh: f64p(4),
+					InnerHigh: f64p(3),
+					InnerLow:  f64p(2),
+					OuterLow:  f64p(1),
+				},
+				BandAlarms: []*models.ModelsBandAlarm{},
+				HalAlarms:  []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				RateOfChange: &RateOfChange{
+					Unit:      "gE",
+					OuterHigh: f64p(2),
+					InnerHigh: f64p(1),
+					InnerLow:  f64p(-1),
+					OuterLow:  f64p(-2),
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				RateOfChange: &models.ModelsRateOfChange{
+					Unit:      "gE",
+					OuterHigh: f64p(2),
+					InnerHigh: f64p(1),
+					InnerLow:  f64p(-1),
+					OuterLow:  f64p(-2),
+				},
+				BandAlarms: []*models.ModelsBandAlarm{},
+				HalAlarms:  []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				ThresholdType: ThresholdTypeInspection,
+				Inspection: &Inspection{
+					Choices: []InspectionChoice{
+						{
+							Answer:      "good",
+							Instruction: "good?",
+							Status:      AlarmStatusGood,
+						},
+					},
+				},
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(3), // inspection
+				Inspection: &models.ModelsInspection{
+					Choices: []*models.ModelsInspectionChoice{
+						{
+							Answer:      "good",
+							Instruction: "good?",
+							Status:      i32p(2),
+						},
+					},
+				},
+				BandAlarms: []*models.ModelsBandAlarm{},
+				HalAlarms:  []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				BandAlarms: []BandAlarm{
+					{},
+				},
+				HALAlarms: []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				BandAlarms: []*models.ModelsBandAlarm{
+					{
+						MinFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(0),
+							Value:     f64p(0),
+						},
+						MaxFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(0),
+							Value:     f64p(0),
+						},
+					},
+				},
+				HalAlarms: []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				FullScale:  f64p(0.5),
+				BandAlarms: []BandAlarm{},
+				HALAlarms:  []HALAlarm{},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				FullScale:     0.5,
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms:     []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				BandAlarms: []BandAlarm{},
+				HALAlarms: []HALAlarm{
+					{},
+				},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms: []*models.ModelsHALAlarm{
+					{},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := test.given.ToInternal()
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_Threshold_ToInternal_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var threshold *Threshold
+
+		expected := models.ModelsSetPointAlarmThresholdRequest{}
+
+		actual := threshold.ToInternal()
+
+		assert.Equal(t, expected, actual)
+	})
 }
