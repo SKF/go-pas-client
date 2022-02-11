@@ -140,9 +140,137 @@ func Test_Inspection_FromInternal(t *testing.T) {
 }
 
 func Test_InspectionChoice_Nil(t *testing.T) {
-	inspection := InspectionChoice{}
+	t.Parallel()
 
-	inspection.FromInternal(nil)
+	assert.NotPanics(t, func() {
+		inspection := InspectionChoice{}
 
-	assert.Equal(t, InspectionChoice{}, inspection)
+		inspection.FromInternal(nil)
+
+		assert.Equal(t, InspectionChoice{}, inspection)
+	})
+}
+
+func Test_Inspection_ToInternal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given    *Inspection
+		expected *models.ModelsInspection
+	}{
+		{
+			given:    nil,
+			expected: nil,
+		},
+		{
+			given: &Inspection{
+				Choices: []InspectionChoice{},
+			},
+			expected: &models.ModelsInspection{
+				Choices: []*models.ModelsInspectionChoice{},
+			},
+		},
+		{
+			given: &Inspection{
+				Choices: []InspectionChoice{
+					{
+						Answer:      "good",
+						Instruction: "is good?",
+						Status:      AlarmStatusGood,
+					},
+				},
+			},
+			expected: &models.ModelsInspection{
+				Choices: []*models.ModelsInspectionChoice{
+					{
+						Answer:      "good",
+						Instruction: "is good?",
+						Status:      i32p(2), // good
+					},
+				},
+			},
+		},
+		{
+			given: &Inspection{
+				Choices: []InspectionChoice{
+					{
+						Answer:      "not configured",
+						Instruction: "is not configured?",
+						Status:      AlarmStatusNotConfigured,
+					},
+					{
+						Answer:      "no data",
+						Instruction: "is no data?",
+						Status:      AlarmStatusNoData,
+					},
+					{
+						Answer:      "good",
+						Instruction: "is good?",
+						Status:      AlarmStatusGood,
+					},
+					{
+						Answer:      "alert",
+						Instruction: "is alert?",
+						Status:      AlarmStatusAlert,
+					},
+					{
+						Answer:      "danger",
+						Instruction: "is danger?",
+						Status:      AlarmStatusDanger,
+					},
+				},
+			},
+			expected: &models.ModelsInspection{
+				Choices: []*models.ModelsInspectionChoice{
+					{
+						Answer:      "not configured",
+						Instruction: "is not configured?",
+						Status:      i32p(0), // not_configured
+					},
+					{
+						Answer:      "no data",
+						Instruction: "is no data?",
+						Status:      i32p(1), // no_data
+					},
+					{
+						Answer:      "good",
+						Instruction: "is good?",
+						Status:      i32p(2), // good
+					},
+					{
+						Answer:      "alert",
+						Instruction: "is alert?",
+						Status:      i32p(3), // alert
+					},
+					{
+						Answer:      "danger",
+						Instruction: "is danger?",
+						Status:      i32p(4), // danger
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := test.given.ToInternal()
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_InspectionChoice_ToInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var choice *InspectionChoice
+
+		actual := choice.ToInternal()
+
+		assert.Nil(t, actual)
+	})
 }

@@ -14,15 +14,15 @@ type (
 	}
 )
 
-func (inspection *Inspection) FromInternal(internal *models.ModelsInspection) {
-	if inspection == nil || internal == nil {
+func (i *Inspection) FromInternal(internal *models.ModelsInspection) {
+	if i == nil || internal == nil {
 		return
 	}
 
-	inspection.Choices = make([]InspectionChoice, len(internal.Choices))
+	i.Choices = make([]InspectionChoice, len(internal.Choices))
 
-	for i, choice := range internal.Choices {
-		inspection.Choices[i].FromInternal(choice)
+	for idx, choice := range internal.Choices {
+		i.Choices[idx].FromInternal(choice)
 	}
 }
 
@@ -36,5 +36,35 @@ func (i *InspectionChoice) FromInternal(internal *models.ModelsInspectionChoice)
 
 	if internal.Status != nil {
 		i.Status = AlarmStatusType(*internal.Status)
+	}
+}
+
+func (i *Inspection) ToInternal() *models.ModelsInspection {
+	if i == nil {
+		return nil
+	}
+
+	inspection := &models.ModelsInspection{
+		Choices: make([]*models.ModelsInspectionChoice, 0, len(i.Choices)),
+	}
+
+	for _, choice := range i.Choices {
+		inspection.Choices = append(inspection.Choices, choice.ToInternal())
+	}
+
+	return inspection
+}
+
+func (i *InspectionChoice) ToInternal() *models.ModelsInspectionChoice {
+	if i == nil {
+		return nil
+	}
+
+	status := int32(i.Status)
+
+	return &models.ModelsInspectionChoice{
+		Answer:      i.Answer,
+		Instruction: i.Instruction,
+		Status:      &status,
 	}
 }

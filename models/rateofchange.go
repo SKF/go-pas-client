@@ -21,3 +21,17 @@ func (r *RateOfChange) FromInternal(internal *models.ModelsRateOfChange) {
 	r.InnerLow = internal.InnerLow
 	r.OuterLow = internal.OuterLow
 }
+
+func (r *RateOfChange) ToInternal() *models.ModelsRateOfChange {
+	if r == nil {
+		return nil
+	}
+
+	return &models.ModelsRateOfChange{
+		Unit:      r.Unit,
+		OuterHigh: r.OuterHigh,
+		InnerHigh: r.InnerHigh,
+		InnerLow:  r.InnerLow,
+		OuterLow:  r.OuterLow,
+	}
+}
