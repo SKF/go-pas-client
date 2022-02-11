@@ -14,6 +14,7 @@ import (
 type API interface {
 	GetThreshold(context.Context, uuid.UUID) (models.Threshold, error)
 	SetThreshold(context.Context, uuid.UUID, models.Threshold) error
+	PatchThreshold(context.Context, uuid.UUID, models.Patch) (models.Threshold, error)
 }
 
 type Client struct {
@@ -72,4 +73,26 @@ func (c *Client) SetThreshold(ctx context.Context, nodeID uuid.UUID, threshold m
 	}
 
 	return nil
+}
+
+func (c *Client) PatchThreshold(ctx context.Context, nodeID uuid.UUID, patch models.Patch) (models.Threshold, error) {
+	request := rest.Patch("v1/point-alarm-threshold/{nodeId}").
+		Assign("nodeId", nodeID).
+		WithJSONPayload(patch).
+		SetHeader("Content-Type", "application/json-patch+json").
+		SetHeader("Accept", "application/json")
+
+	var response internal_models.ModelsGetPointAlarmThresholdResponse
+
+	if err := c.DoAndUnmarshal(ctx, request, &response); err != nil {
+		return models.Threshold{}, fmt.Errorf("getting threshold failed: %w", err)
+	}
+
+	threshold := models.Threshold{} // nolint:exhaustivestruct
+
+	if err := threshold.FromInternal(response); err != nil {
+		return models.Threshold{}, fmt.Errorf("converting threshold failed: %w", err)
+	}
+
+	return threshold, nil
 }

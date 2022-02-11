@@ -21,13 +21,13 @@ import (
 type ModelsSetPointAlarmThresholdRequest struct {
 
 	// band alarms
-	BandAlarms []*ModelsBandAlarm `json:"bandAlarms"`
+	BandAlarms []*ModelsBandAlarm `json:"bandAlarms,omitempty"`
 
 	// full scale
-	FullScale float64 `json:"fullScale,omitempty"`
+	FullScale *float64 `json:"fullScale,omitempty"`
 
 	// hal alarms
-	HalAlarms []*ModelsHALAlarm `json:"halAlarms"`
+	HalAlarms []*ModelsHALAlarm `json:"halAlarms,omitempty"`
 
 	// inspection
 	Inspection *ModelsInspection `json:"inspection,omitempty"`
@@ -43,10 +43,9 @@ type ModelsSetPointAlarmThresholdRequest struct {
 
 	// The type values are available [here](/v1/docs/service#threshold-type).
 	// Example: 2
-	// Required: true
 	// Maximum: 3
 	// Minimum: 0
-	ThresholdType *int32 `json:"thresholdType"`
+	ThresholdType *int32 `json:"thresholdType,omitempty"`
 }
 
 // Validate validates this models set point alarm threshold request
@@ -216,9 +215,8 @@ func (m *ModelsSetPointAlarmThresholdRequest) validateRateOfChange(formats strfm
 }
 
 func (m *ModelsSetPointAlarmThresholdRequest) validateThresholdType(formats strfmt.Registry) error {
-
-	if err := validate.Required("thresholdType", "body", m.ThresholdType); err != nil {
-		return err
+	if swag.IsZero(m.ThresholdType) { // not required
+		return nil
 	}
 
 	if err := validate.MinimumInt("thresholdType", "body", int64(*m.ThresholdType), 0, false); err != nil {

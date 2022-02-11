@@ -313,3 +313,76 @@ func Test_SetThreshold_ErrorResponse(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func Test_PatchThreshold(t *testing.T) {
+	given := internal_models.ModelsGetPointAlarmThresholdResponse{
+		ThresholdType: i32p(2),
+		Overall: &internal_models.ModelsOverall{
+			Unit:      "gE",
+			OuterHigh: f64p(8),
+			InnerHigh: f64p(6),
+			InnerLow:  f64p(2),
+			OuterLow:  f64p(1),
+		},
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if assert.Contains(t, r.Header, "Content-Type") {
+			assert.Equal(t, []string{"application/json-patch+json"}, r.Header["Content-Type"])
+		}
+
+		w.WriteHeader(http.StatusOK)
+
+		err := json.NewEncoder(w).Encode(given)
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	expected := models.Threshold{
+		ThresholdType: models.ThresholdTypeOverallOutOfWindow,
+		Overall: &models.Overall{
+			Unit:      "gE",
+			OuterHigh: f64p(8),
+			InnerHigh: f64p(6),
+			InnerLow:  f64p(2),
+			OuterLow:  f64p(1),
+		},
+		BandAlarms: []models.BandAlarm{},
+		HALAlarms:  []models.HALAlarm{},
+	}
+
+	actual, err := client.PatchThreshold(context.TODO(), uuid.EmptyUUID, models.Patch{})
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, actual)
+}
+
+func Test_PatchThreshold_ErrorResponse(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	_, err := client.PatchThreshold(context.TODO(), uuid.EmptyUUID, models.Patch{})
+
+	assert.Error(t, err)
+}
+
+func Test_PatchThreshold_InvalidNodeIDResponse(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+
+		w.Write([]byte(`{"nodeId": "boop"}`))
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	_, err := client.PatchThreshold(context.TODO(), uuid.EmptyUUID, models.Patch{})
+
+	assert.Error(t, err)
+}

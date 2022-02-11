@@ -10,6 +10,7 @@ require (
 	github.com/go-openapi/swag v0.21.1
 	github.com/go-openapi/validate v0.20.3
 	github.com/stretchr/testify v1.7.0
+	github.com/wI2L/jsondiff v0.1.1
 )
 
 require (
