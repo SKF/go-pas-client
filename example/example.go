@@ -41,24 +41,27 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	set(ctx, client, nodeID)
+	setThreshold(ctx, client, nodeID)
 
 	fmt.Println("The treshold:")
-	get(ctx, client, nodeID)
+	getThreshold(ctx, client, nodeID)
 
 	fmt.Println("The patched treshold:")
-	patch(ctx, client, nodeID)
+	patchThreshold(ctx, client, nodeID)
+
+	fmt.Println("The alarm status:")
+	getAlarmStatus(ctx, client, nodeID)
 }
 
-func print(threshold models.Threshold) {
+func print(data interface{}) {
 	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetIndent("", "  ")
 
-	encoder.Encode(threshold)
+	encoder.Encode(data)
 	fmt.Println()
 }
 
-func set(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+func setThreshold(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	var (
 		outerHigh = 70.0
 		innerHigh = 50.0
@@ -81,7 +84,7 @@ func set(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	}
 }
 
-func patch(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+func patchThreshold(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	patch := models.Patch{
 		{Type: "test", Path: "/overall/outerHigh", Value: 70},
 		{Type: "replace", Path: "/overall/outerHigh", Value: 80},
@@ -95,11 +98,20 @@ func patch(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	print(threshold)
 }
 
-func get(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+func getThreshold(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	threshold, err := client.GetThreshold(ctx, nodeID)
 	if err != nil {
 		panic(err)
 	}
 
 	print(threshold)
+}
+
+func getAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	alarmStatus, err := client.GetAlarmStatus(ctx, nodeID)
+	if err != nil {
+		panic(err)
+	}
+
+	print(alarmStatus)
 }
