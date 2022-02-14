@@ -590,6 +590,66 @@ func Test_GetAlarmStatus_ErrorResponse(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func Test_UpdateAlarmStatus(t *testing.T) {
+	var (
+		now                   = time.UnixMilli(time.Now().UnixMilli()).UTC()
+		measurementID         = uuid.EmptyUUID
+		expectedCreatedAt     = strfmt.DateTime(now)
+		expectedMeasurementID = strfmt.UUID(measurementID.String())
+		expectedContentType   = string(models.ContentTypeDataPoint)
+
+		given = models.Measurement{
+			CreatedAt:     now,
+			MeasurementID: measurementID,
+			ContentType:   models.ContentTypeDataPoint,
+			DataPoint: &models.DataPoint{
+				Coordinate: models.Coordinate{
+					X: float64(now.UnixMilli()),
+					Y: 10.0,
+				},
+				XUnit: "ms",
+				YUnit: "gE",
+			},
+			Tags: map[string]interface{}{
+				"source": "unit-test",
+			},
+		}
+		expected = internal_models.ModelsUpdateAlarmStatusRequest{
+			CreatedAt:     &expectedCreatedAt,
+			MeasurementID: &expectedMeasurementID,
+			ContentType:   &expectedContentType,
+			DataPoint: &internal_models.ModelsDataPoint{
+				Coordinate: &internal_models.ModelsCoordinate{
+					X: f64p(float64(now.UnixMilli())),
+					Y: f64p(10.0),
+				},
+				XUnit: stringp("ms"),
+				YUnit: stringp("gE"),
+			},
+			Tags: map[string]interface{}{
+				"source": "unit-test",
+			},
+		}
+	)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var actual internal_models.ModelsUpdateAlarmStatusRequest
+
+		err := json.NewDecoder(r.Body).Decode(&actual)
+		require.NoError(t, err)
+
+		assert.Equal(t, expected, actual)
+
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	err := client.UpdateAlarmStatus(context.TODO(), uuid.EmptyUUID, given)
+	require.NoError(t, err)
+}
+
 func Test_SetExternalAlarmStatus(t *testing.T) {
 	setBy := uuid.EmptyUUID
 
