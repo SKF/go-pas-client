@@ -51,6 +51,11 @@ func main() {
 
 	fmt.Println("The alarm status:")
 	getAlarmStatus(ctx, client, nodeID)
+
+	setExternalAlarmStatus(ctx, client, nodeID)
+
+	fmt.Println("The alarm status:")
+	getAlarmStatus(ctx, client, nodeID)
 }
 
 func print(data interface{}) {
@@ -114,4 +119,13 @@ func getAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	}
 
 	print(alarmStatus)
+}
+
+func setExternalAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	err := client.SetExternalAlarmStatus(ctx, nodeID, models.ExternalAlarmStatus{
+		Status: models.AlarmStatusAlert,
+	})
+	if err != nil {
+		panic(err)
+	}
 }

@@ -589,3 +589,34 @@ func Test_GetAlarmStatus_ErrorResponse(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func Test_SetExternalAlarmStatus(t *testing.T) {
+	setBy := uuid.EmptyUUID
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var request internal_models.ModelsSetExternalAlarmStatusRequest
+
+		err := json.NewDecoder(r.Body).Decode(&request)
+		require.NoError(t, err)
+
+		if assert.NotNil(t, request.Status) {
+			assert.Equal(t, int32(models.AlarmStatusAlert), *request.Status)
+		}
+
+		if assert.NotNil(t, request.SetBy) {
+			assert.Equal(t, strfmt.UUID(uuid.EmptyUUID.String()), *request.SetBy)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	err := client.SetExternalAlarmStatus(context.TODO(), uuid.EmptyUUID, models.ExternalAlarmStatus{
+		Status: models.AlarmStatusAlert,
+		SetBy:  &setBy,
+	})
+
+	assert.NoError(t, err)
+}

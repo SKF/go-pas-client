@@ -500,6 +500,87 @@ func Test_ExternalAlarmStatus_IsNil(t *testing.T) {
 	})
 }
 
+func Test_ExternalAlarmStatus_ToSetRequest(t *testing.T) {
+	var (
+		setByStrfmt = strfmt.UUID(uuid.EmptyUUID.String())
+		setBy       = uuid.EmptyUUID
+	)
+
+	tests := []struct {
+		given    *ExternalAlarmStatus
+		expected models.ModelsSetExternalAlarmStatusRequest
+	}{
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusNotConfigured,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(0), // not configured
+			},
+		},
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusNoData,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(1), // no data
+			},
+		},
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusGood,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(2), // good
+			},
+		},
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusAlert,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(3), // alert
+			},
+		},
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusDanger,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(4), // danger
+			},
+		},
+		{
+			given: &ExternalAlarmStatus{
+				Status: AlarmStatusGood,
+				SetBy:  &setBy,
+			},
+			expected: models.ModelsSetExternalAlarmStatusRequest{
+				Status: i32p(2), // good
+				SetBy:  &setByStrfmt,
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := test.given.ToSetRequest()
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_ExternalAlarmStatus_ToSetRequest_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var status *ExternalAlarmStatus
+
+		_ = status.ToSetRequest()
+	})
+}
+
 func Test_BandAlarmStatus(t *testing.T) {
 	tests := []struct {
 		given    *models.ModelsGetAlarmStatusResponseBandAlarm
