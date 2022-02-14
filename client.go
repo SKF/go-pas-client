@@ -115,6 +115,23 @@ func (c *Client) GetAlarmStatus(ctx context.Context, nodeID uuid.UUID) (alarmSta
 	return
 }
 
+func (c *Client) UpdateAlarmStatus(
+	ctx context.Context,
+	nodeID uuid.UUID,
+	measurement models.Measurement,
+) (err error) {
+	payload := measurement.ToInternal()
+
+	request := rest.Put("v1/alarm-status/{nodeId}").
+		Assign("nodeId", nodeID).
+		WithJSONPayload(payload).
+		SetHeader("Accept", "application/json")
+
+	_, err = c.Do(ctx, request)
+
+	return
+}
+
 func (c *Client) SetExternalAlarmStatus(
 	ctx context.Context,
 	nodeID uuid.UUID,

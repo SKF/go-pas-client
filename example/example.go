@@ -54,6 +54,8 @@ func main() {
 
 	setExternalAlarmStatus(ctx, client, nodeID)
 
+	updateAlarmStatus(ctx, client, nodeID)
+
 	fmt.Println("The alarm status:")
 	getAlarmStatus(ctx, client, nodeID)
 }
@@ -121,9 +123,34 @@ func getAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	print(alarmStatus)
 }
 
+func updateAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
+	createdAt := time.Now().Add(-time.Minute).UTC()
+	measurement := models.Measurement{
+		CreatedAt:     createdAt,
+		MeasurementID: uuid.EmptyUUID,
+		ContentType:   models.ContentTypeDataPoint,
+		DataPoint: &models.DataPoint{
+			Coordinate: models.Coordinate{
+				X: float64(createdAt.UnixMilli()),
+				Y: 65,
+			},
+			XUnit: "ms",
+			YUnit: "C",
+		},
+		Tags: map[string]interface{}{
+			"source": "unit-test",
+		},
+	}
+
+	err := client.UpdateAlarmStatus(ctx, nodeID, measurement)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func setExternalAlarmStatus(ctx context.Context, client *pas.Client, nodeID uuid.UUID) {
 	err := client.SetExternalAlarmStatus(ctx, nodeID, models.ExternalAlarmStatus{
-		Status: models.AlarmStatusAlert,
+		Status: models.AlarmStatusDanger,
 	})
 	if err != nil {
 		panic(err)
