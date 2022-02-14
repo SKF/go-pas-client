@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -20,8 +22,16 @@ func i32p(i int32) *int32 {
 	return &i
 }
 
+func i64p(i int64) *int64 {
+	return &i
+}
+
 func f64p(f float64) *float64 {
 	return &f
+}
+
+func stringp(s string) *string {
+	return &s
 }
 
 func Test_BaseURL(t *testing.T) {
@@ -383,6 +393,199 @@ func Test_PatchThreshold_InvalidNodeIDResponse(t *testing.T) {
 	client := New(rest.WithBaseURL(server.URL))
 
 	_, err := client.PatchThreshold(context.TODO(), uuid.EmptyUUID, models.Patch{})
+
+	assert.Error(t, err)
+}
+
+func Test_GetAlarmStatus(t *testing.T) {
+	var (
+		now                   = time.UnixMilli(time.Now().UnixMilli()).UTC()
+		triggeringMeasurement = strfmt.UUID(uuid.EmptyUUID.String())
+	)
+
+	given := internal_models.ModelsGetAlarmStatusResponse{
+		UpdatedAt: now.UnixMilli(),
+		Status:    i32p(4), // danger
+		OverallAlarm: &internal_models.ModelsGetAlarmStatusResponseGeneric{
+			Status:                i32p(2), // good
+			TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+		},
+		RateOfChangeAlarm: &internal_models.ModelsGetAlarmStatusResponseGeneric{
+			Status:                i32p(2), // good
+			TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+		},
+		InspectionAlarm: &internal_models.ModelsGetAlarmStatusResponseGeneric{
+			Status:                i32p(2), // good
+			TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+		},
+		ExternalAlarm: &internal_models.ModelsGetAlarmStatusResponseExternal{
+			Status: i32p(2), // good
+		},
+		BandAlarms: []*internal_models.ModelsGetAlarmStatusResponseBandAlarm{
+			{
+				Label:                 "10x RPM",
+				Status:                i32p(3), // alert
+				TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+				MinFrequency: &internal_models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(1), // fixed
+					Value:     f64p(100),
+				},
+				MaxFrequency: &internal_models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(1), // fixed
+					Value:     f64p(500),
+				},
+				CalculatedOverall: &internal_models.ModelsBandCalculatedOverall{
+					Unit:  "gE",
+					Value: f64p(3.5),
+				},
+			},
+			{
+				Label:                 "12 TOOTH SPROCKET",
+				Status:                i32p(2), // good
+				TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+				MinFrequency: &internal_models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(2), // speed multiple
+					Value:     f64p(1.2),
+				},
+				MaxFrequency: &internal_models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(2), // speed multiple
+					Value:     f64p(1.5),
+				},
+				CalculatedOverall: &internal_models.ModelsBandCalculatedOverall{
+					Unit:  "gE",
+					Value: f64p(3.5),
+				},
+			},
+		},
+		HalAlarms: []*internal_models.ModelsGetAlarmStatusResponseHALAlarm{
+			{
+				Label:                 stringp("10x RPM"),
+				Status:                i32p(4), // danger
+				TriggeringMeasurement: &triggeringMeasurement,
+				HalIndex:              f64p(1.22),
+				FaultFrequency:        f64p(122),
+				RpmFactor:             f64p(10),
+				NumberOfHarmonicsUsed: i64p(15),
+			},
+			{
+				Label:                 stringp("12 TOOTH SPROCKET"),
+				Status:                i32p(1), // no data
+				TriggeringMeasurement: &triggeringMeasurement,
+				FaultFrequency:        f64p(122),
+				RpmFactor:             f64p(12),
+				ErrorDescription:      stringp("only peaks"),
+			},
+		},
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+
+		err := json.NewEncoder(w).Encode(given)
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	expected := models.AlarmStatus{
+		UpdatedAt: now,
+		Status:    models.AlarmStatusDanger,
+		Overall: &models.GenericAlarmStatus{
+			Status:                models.AlarmStatusGood,
+			TriggeringMeasurement: uuid.EmptyUUID,
+		},
+		RateOfChange: &models.GenericAlarmStatus{
+			Status:                models.AlarmStatusGood,
+			TriggeringMeasurement: uuid.EmptyUUID,
+		},
+		Inspection: &models.GenericAlarmStatus{
+			Status:                models.AlarmStatusGood,
+			TriggeringMeasurement: uuid.EmptyUUID,
+		},
+		External: &models.ExternalAlarmStatus{
+			Status: models.AlarmStatusGood,
+		},
+		Band: []models.BandAlarmStatus{
+			{
+				Label: "10x RPM",
+				GenericAlarmStatus: models.GenericAlarmStatus{
+					Status:                models.AlarmStatusAlert,
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+				MinFrequency: &models.BandAlarmFrequency{
+					ValueType: models.BandAlarmFrequencyFixed,
+					Value:     100,
+				},
+				MaxFrequency: &models.BandAlarmFrequency{
+					ValueType: models.BandAlarmFrequencyFixed,
+					Value:     500,
+				},
+				CalculatedOverall: models.BandAlarmStatusCalculatedOverall{
+					Unit:  "gE",
+					Value: 3.5,
+				},
+			},
+			{
+				Label: "12 TOOTH SPROCKET",
+				GenericAlarmStatus: models.GenericAlarmStatus{
+					Status:                models.AlarmStatusGood,
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+				MinFrequency: &models.BandAlarmFrequency{
+					ValueType: models.BandAlarmFrequencySpeedMultiple,
+					Value:     1.2,
+				},
+				MaxFrequency: &models.BandAlarmFrequency{
+					ValueType: models.BandAlarmFrequencySpeedMultiple,
+					Value:     1.5,
+				},
+				CalculatedOverall: models.BandAlarmStatusCalculatedOverall{
+					Unit:  "gE",
+					Value: 3.5,
+				},
+			},
+		},
+		HAL: []models.HALAlarmStatus{
+			{
+				Label: "10x RPM",
+				GenericAlarmStatus: models.GenericAlarmStatus{
+					Status:                models.AlarmStatusDanger,
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+				HALIndex:              f64p(1.22),
+				FaultFrequency:        f64p(122),
+				RPMFactor:             f64p(10),
+				NumberOfHarmonicsUsed: i64p(15),
+			},
+			{
+				Label: "12 TOOTH SPROCKET",
+				GenericAlarmStatus: models.GenericAlarmStatus{
+					Status:                models.AlarmStatusNoData,
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+				FaultFrequency:   f64p(122),
+				RPMFactor:        f64p(12),
+				ErrorDescription: stringp("only peaks"),
+			},
+		},
+	}
+
+	actual, err := client.GetAlarmStatus(context.TODO(), uuid.EmptyUUID)
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, actual)
+}
+
+func Test_GetAlarmStatus_ErrorResponse(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	_, err := client.GetAlarmStatus(context.TODO(), uuid.EmptyUUID)
 
 	assert.Error(t, err)
 }

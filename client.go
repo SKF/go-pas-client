@@ -15,6 +15,7 @@ type API interface {
 	GetThreshold(context.Context, uuid.UUID) (models.Threshold, error)
 	SetThreshold(context.Context, uuid.UUID, models.Threshold) error
 	PatchThreshold(context.Context, uuid.UUID, models.Patch) (models.Threshold, error)
+	GetAlarmStatus(context.Context, uuid.UUID) (models.AlarmStatus, error)
 }
 
 type Client struct {
@@ -95,4 +96,20 @@ func (c *Client) PatchThreshold(ctx context.Context, nodeID uuid.UUID, patch mod
 	}
 
 	return threshold, nil
+}
+
+func (c *Client) GetAlarmStatus(ctx context.Context, nodeID uuid.UUID) (alarmStatus models.AlarmStatus, err error) {
+	request := rest.Get("v1/alarm-status/{nodeId}").
+		Assign("nodeId", nodeID).
+		SetHeader("Accept", "application/json")
+
+	var response internal_models.ModelsGetAlarmStatusResponse
+
+	if err = c.DoAndUnmarshal(ctx, request, &response); err != nil {
+		return models.AlarmStatus{}, fmt.Errorf("getting alarm status failed: %w", err)
+	}
+
+	alarmStatus.FromInternal(response)
+
+	return
 }
