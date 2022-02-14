@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 
+	"github.com/go-openapi/strfmt"
+
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
 )
@@ -121,6 +123,27 @@ func (e *ExternalAlarmStatus) FromInternal(internal *models.ModelsGetAlarmStatus
 		setBy := uuid.UUID(internal.SetBy.String())
 		e.SetBy = &setBy
 	}
+}
+
+func (e *ExternalAlarmStatus) ToSetRequest() models.ModelsSetExternalAlarmStatusRequest {
+	if e == nil {
+		return models.ModelsSetExternalAlarmStatusRequest{} // nolint:exhaustivestruct
+	}
+
+	status := int32(e.Status)
+
+	request := models.ModelsSetExternalAlarmStatusRequest{
+		Status: &status,
+		SetBy:  nil,
+	}
+
+	if e.SetBy != nil {
+		setBy := strfmt.UUID(e.SetBy.String())
+
+		request.SetBy = &setBy
+	}
+
+	return request
 }
 
 func (b *BandAlarmStatus) FromInternal(internal *models.ModelsGetAlarmStatusResponseBandAlarm) {

@@ -16,6 +16,7 @@ type API interface {
 	SetThreshold(context.Context, uuid.UUID, models.Threshold) error
 	PatchThreshold(context.Context, uuid.UUID, models.Patch) (models.Threshold, error)
 	GetAlarmStatus(context.Context, uuid.UUID) (models.AlarmStatus, error)
+	SetExternalAlarmStatus(context.Context, uuid.UUID, models.ExternalAlarmStatus) error
 }
 
 type Client struct {
@@ -110,6 +111,23 @@ func (c *Client) GetAlarmStatus(ctx context.Context, nodeID uuid.UUID) (alarmSta
 	}
 
 	alarmStatus.FromInternal(response)
+
+	return
+}
+
+func (c *Client) SetExternalAlarmStatus(
+	ctx context.Context,
+	nodeID uuid.UUID,
+	status models.ExternalAlarmStatus,
+) (err error) {
+	payload := status.ToSetRequest()
+
+	request := rest.Put("v1/alarm-status/{nodeId}/status/external").
+		Assign("nodeId", nodeID).
+		WithJSONPayload(payload).
+		SetHeader("Accept", "application/json")
+
+	_, err = c.Do(ctx, request)
 
 	return
 }
