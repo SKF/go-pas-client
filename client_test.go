@@ -35,6 +35,8 @@ func stringp(s string) *string {
 }
 
 func Test_BaseURL(t *testing.T) {
+	t.Parallel()
+
 	c := New()
 
 	require.NotNil(t, c.Client.BaseURL)
@@ -47,6 +49,8 @@ func Test_BaseURL(t *testing.T) {
 }
 
 func Test_GetThreshold(t *testing.T) {
+	t.Parallel()
+
 	given := internal_models.ModelsGetPointAlarmThresholdResponse{
 		ThresholdType: i32p(2),
 		Overall: &internal_models.ModelsOverall{
@@ -164,6 +168,8 @@ func Test_GetThreshold(t *testing.T) {
 }
 
 func Test_GetThreshold_ErrorResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -177,6 +183,8 @@ func Test_GetThreshold_ErrorResponse(t *testing.T) {
 }
 
 func Test_GetThreshold_InvalidNodeIDResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
@@ -192,6 +200,8 @@ func Test_GetThreshold_InvalidNodeIDResponse(t *testing.T) {
 }
 
 func Test_SetThreshold(t *testing.T) {
+	t.Parallel()
+
 	expected := internal_models.ModelsSetPointAlarmThresholdRequest{
 		ThresholdType: i32p(2),
 		Overall: &internal_models.ModelsOverall{
@@ -312,6 +322,8 @@ func Test_SetThreshold(t *testing.T) {
 }
 
 func Test_SetThreshold_ErrorResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -325,6 +337,8 @@ func Test_SetThreshold_ErrorResponse(t *testing.T) {
 }
 
 func Test_PatchThreshold(t *testing.T) {
+	t.Parallel()
+
 	given := internal_models.ModelsGetPointAlarmThresholdResponse{
 		ThresholdType: i32p(2),
 		Overall: &internal_models.ModelsOverall{
@@ -370,6 +384,8 @@ func Test_PatchThreshold(t *testing.T) {
 }
 
 func Test_PatchThreshold_ErrorResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -383,6 +399,8 @@ func Test_PatchThreshold_ErrorResponse(t *testing.T) {
 }
 
 func Test_PatchThreshold_InvalidNodeIDResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
@@ -398,6 +416,8 @@ func Test_PatchThreshold_InvalidNodeIDResponse(t *testing.T) {
 }
 
 func Test_GetAlarmStatus(t *testing.T) {
+	t.Parallel()
+
 	var (
 		now                   = time.UnixMilli(time.Now().UnixMilli()).UTC()
 		triggeringMeasurement = strfmt.UUID(uuid.EmptyUUID.String())
@@ -578,6 +598,8 @@ func Test_GetAlarmStatus(t *testing.T) {
 }
 
 func Test_GetAlarmStatus_ErrorResponse(t *testing.T) {
+	t.Parallel()
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -591,6 +613,8 @@ func Test_GetAlarmStatus_ErrorResponse(t *testing.T) {
 }
 
 func Test_UpdateAlarmStatus(t *testing.T) {
+	t.Parallel()
+
 	var (
 		now                   = time.UnixMilli(time.Now().UnixMilli()).UTC()
 		measurementID         = uuid.EmptyUUID
@@ -651,6 +675,8 @@ func Test_UpdateAlarmStatus(t *testing.T) {
 }
 
 func Test_SetExternalAlarmStatus(t *testing.T) {
+	t.Parallel()
+
 	setBy := uuid.EmptyUUID
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

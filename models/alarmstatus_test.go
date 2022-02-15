@@ -13,6 +13,8 @@ import (
 )
 
 func Test_AlarmStatus_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	// This strange creation of a timestamp is to make
 	// sure nanoseconds in the time struct doesn't
 	// fail the equals assertion.
@@ -22,13 +24,13 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 
 	tests := []struct {
 		given    models.ModelsGetAlarmStatusResponse
-		expected AlarmStatus
+		expected *AlarmStatus
 	}{
 		{
 			given: models.ModelsGetAlarmStatusResponse{
 				UpdatedAt: now.UnixMilli(),
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Band:      []BandAlarmStatus{},
 				HAL:       []HALAlarmStatus{},
@@ -39,7 +41,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 				UpdatedAt: now.UnixMilli(),
 				Status:    i32p(0), // not configured
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Status:    AlarmStatusNotConfigured,
 				Band:      []BandAlarmStatus{},
@@ -51,7 +53,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 				UpdatedAt: now.UnixMilli(),
 				Status:    i32p(1), // no data
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Status:    AlarmStatusNoData,
 				Band:      []BandAlarmStatus{},
@@ -63,7 +65,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 				UpdatedAt: now.UnixMilli(),
 				Status:    i32p(2), // good
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Status:    AlarmStatusGood,
 				Band:      []BandAlarmStatus{},
@@ -75,7 +77,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 				UpdatedAt: now.UnixMilli(),
 				Status:    i32p(3), // alert
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Status:    AlarmStatusAlert,
 				Band:      []BandAlarmStatus{},
@@ -87,7 +89,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 				UpdatedAt: now.UnixMilli(),
 				Status:    i32p(4), // danger
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Status:    AlarmStatusDanger,
 				Band:      []BandAlarmStatus{},
@@ -102,7 +104,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Overall: &GenericAlarmStatus{
 					Status:                AlarmStatusGood,
@@ -120,7 +122,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				RateOfChange: &GenericAlarmStatus{
 					Status:                AlarmStatusGood,
@@ -138,7 +140,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Inspection: &GenericAlarmStatus{
 					Status:                AlarmStatusGood,
@@ -155,7 +157,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					Status: i32p(2), // good
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				External: &ExternalAlarmStatus{
 					Status: AlarmStatusGood,
@@ -204,7 +206,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Band: []BandAlarmStatus{
 					{
@@ -272,7 +274,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: AlarmStatus{
+			expected: &AlarmStatus{
 				UpdatedAt: now,
 				Band:      []BandAlarmStatus{},
 				HAL: []HALAlarmStatus{
@@ -306,7 +308,7 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 		test := test
 
 		t.Run("", func(t *testing.T) {
-			actual := AlarmStatus{}
+			actual := new(AlarmStatus)
 
 			actual.FromInternal(test.given)
 
@@ -316,6 +318,8 @@ func Test_AlarmStatus_FromInternal(t *testing.T) {
 }
 
 func Test_AlarmStatus_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *AlarmStatus
 
@@ -324,6 +328,8 @@ func Test_AlarmStatus_FromInternal_IsNil(t *testing.T) {
 }
 
 func Test_GenericAlarmStatus_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    *models.ModelsGetAlarmStatusResponseGeneric
 		expected *GenericAlarmStatus
@@ -396,6 +402,8 @@ func Test_GenericAlarmStatus_FromInternal(t *testing.T) {
 }
 
 func Test_GenericAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *GenericAlarmStatus
 
@@ -403,13 +411,15 @@ func Test_GenericAlarmStatus_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := GenericAlarmStatus{}
+		status := new(GenericAlarmStatus)
 
 		status.FromInternal(nil)
 	})
 }
 
 func Test_GenericAlarmStatus_FromEvent(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    *events.GenericAlarm
 		expected *GenericAlarmStatus
@@ -482,6 +492,8 @@ func Test_GenericAlarmStatus_FromEvent(t *testing.T) {
 }
 
 func Test_GenericAlarmStatus_FromEvent_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *GenericAlarmStatus
 
@@ -489,13 +501,15 @@ func Test_GenericAlarmStatus_FromEvent_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := GenericAlarmStatus{}
+		status := new(GenericAlarmStatus)
 
 		status.FromEvent(nil)
 	})
 }
 
 func Test_ExternalAlarmStatus_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	var (
 		setByStrfmt = strfmt.UUID(uuid.EmptyUUID.String())
 		setBy       = uuid.EmptyUUID
@@ -573,6 +587,8 @@ func Test_ExternalAlarmStatus_FromInternal(t *testing.T) {
 }
 
 func Test_ExternalAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *ExternalAlarmStatus
 
@@ -580,13 +596,15 @@ func Test_ExternalAlarmStatus_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := ExternalAlarmStatus{}
+		status := new(ExternalAlarmStatus)
 
 		status.FromInternal(nil)
 	})
 }
 
 func Test_ExternalAlarmStatus_FromEvent(t *testing.T) {
+	t.Parallel()
+
 	setBy := uuid.EmptyUUID
 
 	tests := []struct {
@@ -661,6 +679,8 @@ func Test_ExternalAlarmStatus_FromEvent(t *testing.T) {
 }
 
 func Test_ExternalAlarmStatus_FromEvent_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *ExternalAlarmStatus
 
@@ -668,13 +688,15 @@ func Test_ExternalAlarmStatus_FromEvent_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := ExternalAlarmStatus{}
+		status := new(ExternalAlarmStatus)
 
 		status.FromEvent(nil)
 	})
 }
 
 func Test_ExternalAlarmStatus_ToSetRequest(t *testing.T) {
+	t.Parallel()
+
 	var (
 		setByStrfmt = strfmt.UUID(uuid.EmptyUUID.String())
 		setBy       = uuid.EmptyUUID
@@ -748,6 +770,8 @@ func Test_ExternalAlarmStatus_ToSetRequest(t *testing.T) {
 }
 
 func Test_ExternalAlarmStatus_ToSetRequest_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *ExternalAlarmStatus
 

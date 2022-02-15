@@ -11,6 +11,8 @@ import (
 )
 
 func Test_ProblemDecoder(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given *http.Response
 	}{

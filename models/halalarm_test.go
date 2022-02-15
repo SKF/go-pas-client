@@ -6,10 +6,13 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
+	pas "github.com/SKF/proto/v2/pas"
 )
 
 func Test_HALAlarm_FromInternal(t *testing.T) {
@@ -17,21 +20,21 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 
 	tests := []struct {
 		given    *models.ModelsHALAlarm
-		expected HALAlarm
+		expected *HALAlarm
 	}{
 		{
 			given:    nil,
-			expected: HALAlarm{},
+			expected: &HALAlarm{},
 		},
 		{
 			given:    &models.ModelsHALAlarm{},
-			expected: HALAlarm{},
+			expected: &HALAlarm{},
 		},
 		{
 			given: &models.ModelsHALAlarm{
 				HalAlarmType: models.ModelsHALAlarmHalAlarmTypeGLOBAL,
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				HALAlarmType: HALAlarmTypeGlobal,
 			},
 		},
@@ -39,7 +42,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 			given: &models.ModelsHALAlarm{
 				HalAlarmType: models.ModelsHALAlarmHalAlarmTypeFREQUENCY,
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				HALAlarmType: HALAlarmTypeFaultFrequency,
 			},
 		},
@@ -50,7 +53,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 					ModelNumber:  stringp("2222"),
 				},
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				Bearing: &Bearing{
 					Manufacturer: "SKF",
 					ModelNumber:  "2222",
@@ -61,7 +64,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 			given: &models.ModelsHALAlarm{
 				UpperAlert: f64p(10),
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				UpperAlert: f64p(10),
 			},
 		},
@@ -69,7 +72,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 			given: &models.ModelsHALAlarm{
 				UpperDanger: f64p(20),
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				UpperDanger: f64p(20),
 			},
 		},
@@ -78,7 +81,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 				UpperAlert:  f64p(10),
 				UpperDanger: f64p(20),
 			},
-			expected: HALAlarm{
+			expected: &HALAlarm{
 				UpperAlert:  f64p(10),
 				UpperDanger: f64p(20),
 			},
@@ -89,7 +92,7 @@ func Test_HALAlarm_FromInternal(t *testing.T) {
 		test := test
 
 		t.Run("", func(t *testing.T) {
-			actual := HALAlarm{}
+			actual := new(HALAlarm)
 
 			actual.FromInternal(test.given)
 
@@ -108,7 +111,7 @@ func Test_HALAlarm_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		halAlarm := &HALAlarm{}
+		halAlarm := new(HALAlarm)
 
 		halAlarm.FromInternal(nil)
 	})
@@ -210,7 +213,129 @@ func Test_HALAlarm_ToInternal_IsNil(t *testing.T) {
 	})
 }
 
+func Test_HALAlarm_FromProto(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given    *pas.HalAlarm
+		expected *HALAlarm
+	}{
+		{
+			given: &pas.HalAlarm{
+				HalAlarmType: models.ModelsHALAlarmHalAlarmTypeGLOBAL,
+			},
+			expected: &HALAlarm{
+				HALAlarmType: HALAlarmTypeGlobal,
+			},
+		},
+		{
+			given: &pas.HalAlarm{
+				HalAlarmType: models.ModelsHALAlarmHalAlarmTypeFREQUENCY,
+			},
+			expected: &HALAlarm{
+				HALAlarmType: HALAlarmTypeFaultFrequency,
+			},
+		},
+		{
+			given: &pas.HalAlarm{
+				Bearing: &pas.Bearing{
+					Manufacturer: "SKF",
+					ModelNumber:  "2222",
+				},
+			},
+			expected: &HALAlarm{
+				Bearing: &Bearing{
+					Manufacturer: "SKF",
+					ModelNumber:  "2222",
+				},
+			},
+		},
+		{
+			given: &pas.HalAlarm{
+				UpperAlert: &pas.DoubleObject{
+					Value: 10,
+				},
+			},
+			expected: &HALAlarm{
+				UpperAlert: f64p(10),
+			},
+		},
+		{
+			given: &pas.HalAlarm{
+				UpperDanger: &pas.DoubleObject{
+					Value: 20,
+				},
+			},
+			expected: &HALAlarm{
+				UpperDanger: f64p(20),
+			},
+		},
+		{
+			given: &pas.HalAlarm{
+				UpperAlert: &pas.DoubleObject{
+					Value: 10,
+				},
+				UpperDanger: &pas.DoubleObject{
+					Value: 20,
+				},
+			},
+			expected: &HALAlarm{
+				UpperAlert:  f64p(10),
+				UpperDanger: f64p(20),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			buf, err := proto.Marshal(test.given)
+			require.NoError(t, err)
+
+			actual := new(HALAlarm)
+
+			err = actual.FromProto(buf)
+			require.NoError(t, err)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_HALAlarm_FromProto_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var halAlarm *HALAlarm
+
+		err := halAlarm.FromProto([]byte{})
+
+		assert.NoError(t, err)
+	})
+
+	assert.NotPanics(t, func() {
+		halAlarm := new(HALAlarm)
+
+		err := halAlarm.FromProto(nil)
+
+		assert.NoError(t, err)
+	})
+}
+
+func Test_HALAlarm_FromProto_InvalidBody(t *testing.T) {
+	t.Parallel()
+
+	actual := new(HALAlarm)
+
+	err := actual.FromProto([]byte("not-valid"))
+
+	assert.Error(t, err)
+}
+
 func Test_HALAlarmStatus_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	triggeringMeasurement := strfmt.UUID(uuid.EmptyUUID.String())
 
 	tests := []struct {
@@ -359,6 +484,8 @@ func Test_HALAlarmStatus_FromInternal(t *testing.T) {
 }
 
 func Test_HALAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *HALAlarmStatus
 
@@ -366,13 +493,15 @@ func Test_HALAlarmStatus_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := HALAlarmStatus{}
+		status := new(HALAlarmStatus)
 
 		status.FromInternal(nil)
 	})
 }
 
-func Test_HALAlarm_FromEvent(t *testing.T) {
+func Test_HALAlarmStatus_FromEvent(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    events.HalAlarmStatus
 		expected *HALAlarmStatus
@@ -518,7 +647,9 @@ func Test_HALAlarm_FromEvent(t *testing.T) {
 	}
 }
 
-func Test_HALAlarm_FromEvent_IsNil(t *testing.T) {
+func Test_HALAlarmStatus_FromEvent_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var h *HALAlarmStatus
 

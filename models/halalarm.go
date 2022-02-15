@@ -1,9 +1,14 @@
 package models
 
 import (
+	"fmt"
+
+	"google.golang.org/protobuf/proto"
+
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
+	pas "github.com/SKF/proto/v2/pas"
 )
 
 type (
@@ -60,6 +65,38 @@ func (h *HALAlarm) ToInternal() *models.ModelsHALAlarm {
 	}
 
 	return halAlarm
+}
+
+func (h *HALAlarm) FromProto(buf []byte) error {
+	if h == nil || len(buf) == 0 {
+		return nil
+	}
+
+	var internal pas.HalAlarm
+
+	if err := proto.Unmarshal(buf, &internal); err != nil {
+		return fmt.Errorf("decoding hal alarm failed: %w", err)
+	}
+
+	h.Label = internal.Label
+	h.HALAlarmType = HALAlarmType(internal.HalAlarmType)
+
+	if internal.UpperAlert != nil {
+		h.UpperAlert = &internal.UpperAlert.Value
+	}
+
+	if internal.UpperDanger != nil {
+		h.UpperDanger = &internal.UpperDanger.Value
+	}
+
+	if internal.Bearing != nil {
+		h.Bearing = &Bearing{
+			Manufacturer: internal.Bearing.Manufacturer,
+			ModelNumber:  internal.Bearing.ModelNumber,
+		}
+	}
+
+	return nil
 }
 
 type HALAlarmStatus struct {

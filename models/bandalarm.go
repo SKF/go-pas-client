@@ -1,9 +1,14 @@
 package models
 
 import (
+	"fmt"
+
+	"google.golang.org/protobuf/proto"
+
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
+	pas "github.com/SKF/proto/v2/pas"
 )
 
 type (
@@ -37,14 +42,13 @@ func (b *BandAlarm) FromInternal(internal *models.ModelsBandAlarm) {
 	}
 
 	b.Label = internal.Label
+	b.MinFrequency.FromInternalThreshold(internal.MinFrequency)
+	b.MaxFrequency.FromInternalThreshold(internal.MaxFrequency)
 
 	if internal.OverallThreshold != nil {
 		b.OverallThreshold = new(BandAlarmOverallThreshold)
 		b.OverallThreshold.FromInternal(internal.OverallThreshold)
 	}
-
-	b.MinFrequency.FromInternalThreshold(internal.MinFrequency)
-	b.MaxFrequency.FromInternalThreshold(internal.MaxFrequency)
 }
 
 func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
@@ -58,6 +62,29 @@ func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
 		MinFrequency:     b.MinFrequency.ToInternal(),
 		MaxFrequency:     b.MaxFrequency.ToInternal(),
 	}
+}
+
+func (b *BandAlarm) FromProto(buf []byte) error {
+	if b == nil {
+		return nil
+	}
+
+	var internal pas.BandAlarm
+
+	if err := proto.Unmarshal(buf, &internal); err != nil {
+		return fmt.Errorf("decoding band alarm failed: %w", err)
+	}
+
+	b.Label = internal.Label
+	b.MinFrequency.FromProto(internal.MinFrequency)
+	b.MaxFrequency.FromProto(internal.MaxFrequency)
+
+	if internal.OverallThreshold != nil {
+		b.OverallThreshold = new(BandAlarmOverallThreshold)
+		b.OverallThreshold.FromProto(internal.OverallThreshold)
+	}
+
+	return nil
 }
 
 func (f *BandAlarmFrequency) FromInternalThreshold(internal *models.ModelsBandAlarmFrequency) {
@@ -101,6 +128,18 @@ func (f *BandAlarmFrequency) ToInternal() *models.ModelsBandAlarmFrequency {
 	}
 }
 
+func (f *BandAlarmFrequency) FromProto(internal *pas.Frequency) {
+	if f == nil || internal == nil {
+		return
+	}
+
+	f.ValueType = BandAlarmFrequencyValueType(internal.ValueType)
+
+	if internal.Value != nil {
+		f.Value = internal.Value.Value
+	}
+}
+
 func (b *BandAlarmOverallThreshold) FromInternal(internal *models.ModelsBandAlarmOverallThreshold) {
 	if b == nil || internal == nil {
 		return
@@ -131,6 +170,24 @@ func (b *BandAlarmOverallThreshold) ToInternal() *models.ModelsBandAlarmOverallT
 	}
 }
 
+func (b *BandAlarmOverallThreshold) FromProto(internal *pas.BandAlarmOverallThreshold) {
+	if b == nil || internal == nil {
+		return
+	}
+
+	b.Unit = internal.Unit
+
+	if internal.UpperAlert != nil {
+		b.UpperAlert = new(BandAlarmThreshold)
+		b.UpperAlert.FromProto(internal.UpperAlert)
+	}
+
+	if internal.UpperDanger != nil {
+		b.UpperDanger = new(BandAlarmThreshold)
+		b.UpperDanger.FromProto(internal.UpperDanger)
+	}
+}
+
 func (t *BandAlarmThreshold) FromInternal(internal *models.ModelsBandAlarmThreshold) {
 	if t == nil || internal == nil {
 		return
@@ -155,6 +212,18 @@ func (t *BandAlarmThreshold) ToInternal() *models.ModelsBandAlarmThreshold {
 	return &models.ModelsBandAlarmThreshold{
 		ValueType: &valueType,
 		Value:     &t.Value,
+	}
+}
+
+func (t *BandAlarmThreshold) FromProto(internal *pas.ThresholdValue) {
+	if t == nil || internal == nil {
+		return
+	}
+
+	t.ValueType = BandAlarmThresholdType(internal.ValueType)
+
+	if internal.Value != nil {
+		t.Value = internal.Value.Value
 	}
 }
 

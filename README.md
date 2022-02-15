@@ -47,15 +47,25 @@ Events sent by the PAS service (as documented [here](https://api.point-alarm-sta
 
 The input to each decoding function should be the content of the event record `Data` field.
 
+The intention with these event types is to provide functionality that convert the event types sent on the SNS topic, which have have a slightly different structure compared to when fetching e.g. alarm thresholds from the API, into the same models returned by the client API calls. This should make the event models easier to use together with other client functions.
+
+Below is an example which catches changes to overall thresholds where the measurement unit is set to `C°`, and modifies it to `C`.
+
 ```go
 var record eventsource.Record
 
-event := models.AlarmStatusEvent{}
+event := new(models.ThresholdEvent)
 
-err := event.FromEvent(record.Data)
-if err != nil {
+if err := event.FromEvent(record.Data); err != nil {
   panic(err)
 }
-```
 
-The intention with these event types is to provide functionality that convert the event types into the same models returned by the client API calls.
+threshold := event.Threshold
+
+if threshold.Overall != nil && threshold.Overall.Unit == "C°" {
+  threshold.Overall.Unit = "C"
+
+  client.SetThreshold(ctx, nodeID, threshold)
+}
+
+```
