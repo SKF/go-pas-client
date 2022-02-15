@@ -20,6 +20,7 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/SKF/go-enlight-middleware v0.4.0 // indirect
+	github.com/SKF/go-eventsource/v2 v2.12.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/aws/aws-sdk-go v1.35.30 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.13.0 // indirect
@@ -28,6 +29,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0 // indirect
 	github.com/aws/smithy-go v1.10.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a // indirect
@@ -54,6 +56,9 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.3.0 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tinylib/msgp v1.1.2 // indirect
 	github.com/wI2L/jsondiff v0.1.1 // indirect
 	go.mongodb.org/mongo-driver v1.7.5 // indirect

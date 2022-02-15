@@ -40,3 +40,22 @@ if err != nil {
   }
 }
 ```
+
+## Events
+
+Events sent by the PAS service (as documented [here](https://api.point-alarm-status.sandbox.iot.enlight.skf.com/v1/docs/service/sns)) can be decoded into types defined in [models/events.go](/models/events.go).
+
+The input to each decoding function should be the content of the event record `Data` field.
+
+```go
+var record eventsource.Record
+
+event := models.AlarmStatusEvent{}
+
+err := event.FromEvent(record.Data)
+if err != nil {
+  panic(err)
+}
+```
+
+The intention with these event types is to provide functionality that convert the event types into the same models returned by the client API calls.

@@ -1,11 +1,15 @@
 package models
 
 import (
+	"math"
 	"testing"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
+	"github.com/SKF/go-utility/v2/uuid"
 )
 
 func Test_HALAlarm_FromInternal(t *testing.T) {
@@ -203,5 +207,321 @@ func Test_HALAlarm_ToInternal_IsNil(t *testing.T) {
 		actual := halAlarm.ToInternal()
 
 		assert.Nil(t, actual)
+	})
+}
+
+func Test_HALAlarmStatus_FromInternal(t *testing.T) {
+	triggeringMeasurement := strfmt.UUID(uuid.EmptyUUID.String())
+
+	tests := []struct {
+		given    *models.ModelsGetAlarmStatusResponseHALAlarm
+		expected *HALAlarmStatus
+	}{
+		{
+			given:    &models.ModelsGetAlarmStatusResponseHALAlarm{},
+			expected: &HALAlarmStatus{},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Label: stringp("10x RPM"),
+			},
+			expected: &HALAlarmStatus{
+				Label: "10x RPM",
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Status: i32p(0), // not configured
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNotConfigured,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Status: i32p(1), // no data
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNoData,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Status: i32p(2), // good
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusGood,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Status: i32p(3), // alert
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusAlert,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Status: i32p(4), // danger
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusDanger,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				TriggeringMeasurement: &triggeringMeasurement,
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				Bearing: &models.ModelsBearing{
+					Manufacturer: stringp("SKF"),
+					ModelNumber:  stringp("2222"),
+				},
+			},
+			expected: &HALAlarmStatus{
+				Bearing: &Bearing{
+					Manufacturer: "SKF",
+					ModelNumber:  "2222",
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				HalIndex: f64p(math.Pi),
+			},
+			expected: &HALAlarmStatus{
+				HALIndex: f64p(math.Pi),
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				FaultFrequency: f64p(math.Pi),
+			},
+			expected: &HALAlarmStatus{
+				FaultFrequency: f64p(math.Pi),
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				NumberOfHarmonicsUsed: i64p(25),
+			},
+			expected: &HALAlarmStatus{
+				NumberOfHarmonicsUsed: i64p(25),
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				RpmFactor: f64p(10),
+			},
+			expected: &HALAlarmStatus{
+				RPMFactor: f64p(10),
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseHALAlarm{
+				ErrorDescription: stringp("only peaks"),
+			},
+			expected: &HALAlarmStatus{
+				ErrorDescription: stringp("only peaks"),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := new(HALAlarmStatus)
+
+			actual.FromInternal(test.given)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_HALAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var status *HALAlarmStatus
+
+		status.FromInternal(&models.ModelsGetAlarmStatusResponseHALAlarm{})
+	})
+
+	assert.NotPanics(t, func() {
+		status := HALAlarmStatus{}
+
+		status.FromInternal(nil)
+	})
+}
+
+func Test_HALAlarm_FromEvent(t *testing.T) {
+	tests := []struct {
+		given    events.HalAlarmStatus
+		expected *HALAlarmStatus
+	}{
+		{
+			given:    events.HalAlarmStatus{},
+			expected: &HALAlarmStatus{},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Label: "10x RPM",
+			},
+			expected: &HALAlarmStatus{
+				Label: "10x RPM",
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Status: 0, // not configured
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNotConfigured,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Status: 1, // no data
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNoData,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Status: 2, // good
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusGood,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Status: 3, // alert
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusAlert,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Status: 4, // danger
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusDanger,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				TriggeringMeasurement: uuid.EmptyUUID,
+			},
+			expected: &HALAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				Bearing: &events.Bearing{
+					Manufacturer: "SKF",
+					ModelNumber:  "2222",
+				},
+			},
+			expected: &HALAlarmStatus{
+				Bearing: &Bearing{
+					Manufacturer: "SKF",
+					ModelNumber:  "2222",
+				},
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				HALIndex: f64p(math.Pi),
+			},
+			expected: &HALAlarmStatus{
+				HALIndex: f64p(math.Pi),
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				FaultFrequency: f64p(math.Pi),
+			},
+			expected: &HALAlarmStatus{
+				FaultFrequency: f64p(math.Pi),
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				NumberOfHarmonicsUsed: i64p(25),
+			},
+			expected: &HALAlarmStatus{
+				NumberOfHarmonicsUsed: i64p(25),
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				RpmFactor: f64p(10),
+			},
+			expected: &HALAlarmStatus{
+				RPMFactor: f64p(10),
+			},
+		},
+		{
+			given: events.HalAlarmStatus{
+				ErrorDescription: stringp("only peaks"),
+			},
+			expected: &HALAlarmStatus{
+				ErrorDescription: stringp("only peaks"),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := new(HALAlarmStatus)
+
+			actual.FromEvent(test.given)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_HALAlarm_FromEvent_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var h *HALAlarmStatus
+
+		h.FromEvent(events.HalAlarmStatus{})
 	})
 }

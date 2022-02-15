@@ -513,15 +513,15 @@ func Test_GetAlarmStatus(t *testing.T) {
 					Status:                models.AlarmStatusAlert,
 					TriggeringMeasurement: uuid.EmptyUUID,
 				},
-				MinFrequency: &models.BandAlarmFrequency{
+				MinFrequency: models.BandAlarmFrequency{
 					ValueType: models.BandAlarmFrequencyFixed,
 					Value:     100,
 				},
-				MaxFrequency: &models.BandAlarmFrequency{
+				MaxFrequency: models.BandAlarmFrequency{
 					ValueType: models.BandAlarmFrequencyFixed,
 					Value:     500,
 				},
-				CalculatedOverall: models.BandAlarmStatusCalculatedOverall{
+				CalculatedOverall: &models.BandAlarmStatusCalculatedOverall{
 					Unit:  "gE",
 					Value: 3.5,
 				},
@@ -532,15 +532,15 @@ func Test_GetAlarmStatus(t *testing.T) {
 					Status:                models.AlarmStatusGood,
 					TriggeringMeasurement: uuid.EmptyUUID,
 				},
-				MinFrequency: &models.BandAlarmFrequency{
+				MinFrequency: models.BandAlarmFrequency{
 					ValueType: models.BandAlarmFrequencySpeedMultiple,
 					Value:     1.2,
 				},
-				MaxFrequency: &models.BandAlarmFrequency{
+				MaxFrequency: models.BandAlarmFrequency{
 					ValueType: models.BandAlarmFrequencySpeedMultiple,
 					Value:     1.5,
 				},
-				CalculatedOverall: models.BandAlarmStatusCalculatedOverall{
+				CalculatedOverall: &models.BandAlarmStatusCalculatedOverall{
 					Unit:  "gE",
 					Value: 3.5,
 				},
