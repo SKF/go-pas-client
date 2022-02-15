@@ -38,6 +38,7 @@ func New(opts ...rest.Option) *Client {
 		append([]rest.Option{
 			// Defaults to production stage if no option is supplied
 			WithStage(stages.StageProd),
+			rest.WithProblemDecoder(&ProblemDecoder{}),
 		}, opts...)...,
 	)
 
