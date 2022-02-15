@@ -3,6 +3,7 @@ module github.com/SKF/go-pas-client
 go 1.17
 
 require (
+	github.com/SKF/go-eventsource/v2 v2.12.1
 	github.com/SKF/go-rest-utility v0.9.0
 	github.com/SKF/go-utility/v2 v2.25.3
 	github.com/go-openapi/errors v0.20.2
@@ -14,8 +15,8 @@ require (
 )
 
 require (
-	github.com/DataDog/datadog-go v4.4.0+incompatible // indirect
-	github.com/Microsoft/go-winio v0.4.17 // indirect
+	github.com/DataDog/datadog-go v4.8.2+incompatible // indirect
+	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/SKF/go-enlight-middleware v0.4.0 // indirect
@@ -44,9 +45,10 @@ require (
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
-	github.com/philhofer/fwd v1.0.0 // indirect
+	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/tinylib/msgp v1.1.2 // indirect
 	go.mongodb.org/mongo-driver v1.7.5 // indirect
 	go.opencensus.io v0.23.0 // indirect

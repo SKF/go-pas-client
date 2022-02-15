@@ -31,7 +31,10 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/SKF/go-enlight-middleware v0.4.0 h1:GZCiFIVSo9GHHhlBWZRhUze5xa9Zr2vksYmfYim0LeA=
 github.com/SKF/go-enlight-middleware v0.4.0/go.mod h1:6MczgmHn4QL8yYTVEvnO/DbDWzTmLWIe1sbqAOlocVg=
 github.com/SKF/go-enlight-sdk/v2 v2.9.3/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4dfHGRcMpjfw7WM=
+github.com/SKF/go-eventsource v1.4.2 h1:c6xQc36EgxmffbjQMxhe9rsCMCfgOI7ZllQJ4Qj/PvA=
 github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScosdAWwxmDVds=
+github.com/SKF/go-eventsource/v2 v2.12.1 h1:EMXROTXi/rttgz3Pwe8LIqwCRNC2smL/flQ/F3XzxYA=
+github.com/SKF/go-eventsource/v2 v2.12.1/go.mod h1:zTsSyBtuLEqbF83f/yYML6JPaiS2aNJLnKgcAqtt04k=
 github.com/SKF/go-rest-utility v0.3.0/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-rest-utility v0.5.0/go.mod h1:yFHIQRiZpjQf2d43vuHbzXtKhT4l+FuQcuZMZIgFB/E=
 github.com/SKF/go-rest-utility v0.9.0 h1:gXcsyOhfqsWmqlbJYyIpG0PMdvFYlxE4Ws1GckDNpXE=
@@ -43,6 +46,7 @@ github.com/SKF/go-utility/v2 v2.0.1/go.mod h1:PweUWJgg67c9AYV/OInVGRdVh5gmLc0hZX
 github.com/SKF/go-utility/v2 v2.2.2/go.mod h1:58mYgUJwysqzdcAploXrLQpyjJSsfTjD2C3kzk6pcuQ=
 github.com/SKF/go-utility/v2 v2.12.0/go.mod h1:TB3CTJAXMADRimxbBka6sOA/mrkVmC2lwfXoR/jRJlA=
 github.com/SKF/go-utility/v2 v2.20.0/go.mod h1:VoC6KEYgutG6W8W073Jb8Uwd1MYXaB5sq6Ougkp9gY4=
+github.com/SKF/go-utility/v2 v2.24.0/go.mod h1:lPJAVtRO4lV/Gg8AGogofBNrdvQSl1TUISQmynxYmzA=
 github.com/SKF/go-utility/v2 v2.25.2/go.mod h1:vNsxDA+tBxVW1AuQmCI3GoZu4RNG76bt6as4ZW9rUWw=
 github.com/SKF/go-utility/v2 v2.25.3 h1:IEpOzSU8y3db+MkvMKJe2XjLWmdaaMP8X7bf9EXgc4k=
 github.com/SKF/go-utility/v2 v2.25.3/go.mod h1:uHFUYZL5p9HYstelDwQBuKV1NzzKS6i5xlV8l2BlFmc=

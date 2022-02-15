@@ -1,6 +1,10 @@
 package models
 
-import models "github.com/SKF/go-pas-client/internal/models"
+import (
+	"github.com/SKF/go-pas-client/internal/events"
+	models "github.com/SKF/go-pas-client/internal/models"
+	"github.com/SKF/go-utility/v2/uuid"
+)
 
 type (
 	BandAlarm struct {
@@ -151,5 +155,80 @@ func (t *BandAlarmThreshold) ToInternal() *models.ModelsBandAlarmThreshold {
 	return &models.ModelsBandAlarmThreshold{
 		ValueType: &valueType,
 		Value:     &t.Value,
+	}
+}
+
+type (
+	BandAlarmStatus struct {
+		GenericAlarmStatus
+		Label             string
+		MinFrequency      BandAlarmFrequency
+		MaxFrequency      BandAlarmFrequency
+		CalculatedOverall *BandAlarmStatusCalculatedOverall
+	}
+
+	BandAlarmStatusCalculatedOverall struct {
+		Unit  string
+		Value float64
+	}
+)
+
+func (b *BandAlarmStatus) FromInternal(internal *models.ModelsGetAlarmStatusResponseBandAlarm) {
+	if b == nil || internal == nil {
+		return
+	}
+
+	b.Label = internal.Label
+
+	if internal.Status != nil {
+		b.Status = AlarmStatusType(*internal.Status)
+	}
+
+	b.TriggeringMeasurement = uuid.UUID(internal.TriggeringMeasurement.String())
+
+	if internal.MinFrequency != nil {
+		b.MinFrequency.FromInternalAlarmStatus(internal.MinFrequency)
+	}
+
+	if internal.MaxFrequency != nil {
+		b.MaxFrequency.FromInternalAlarmStatus(internal.MaxFrequency)
+	}
+
+	if internal.CalculatedOverall != nil {
+		b.CalculatedOverall = &BandAlarmStatusCalculatedOverall{
+			Unit:  internal.CalculatedOverall.Unit,
+			Value: 0,
+		}
+
+		if internal.CalculatedOverall.Value != nil {
+			b.CalculatedOverall.Value = *internal.CalculatedOverall.Value
+		}
+	}
+}
+
+func (b *BandAlarmStatus) FromEvent(internal events.BandAlarmStatus) {
+	if b == nil {
+		return
+	}
+
+	b.Label = internal.Label
+	b.Status = AlarmStatusType(internal.Status)
+	b.TriggeringMeasurement = internal.TriggeringMeasurement
+
+	b.MinFrequency = BandAlarmFrequency{
+		ValueType: BandAlarmFrequencyValueType(internal.MinFrequency.ValueType),
+		Value:     internal.MinFrequency.Value,
+	}
+
+	b.MaxFrequency = BandAlarmFrequency{
+		ValueType: BandAlarmFrequencyValueType(internal.MaxFrequency.ValueType),
+		Value:     internal.MaxFrequency.Value,
+	}
+
+	if internal.CalculatedOverall != nil {
+		b.CalculatedOverall = &BandAlarmStatusCalculatedOverall{
+			Unit:  internal.CalculatedOverall.Unit,
+			Value: internal.CalculatedOverall.Value,
+		}
 	}
 }

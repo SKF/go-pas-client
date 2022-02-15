@@ -5,13 +5,15 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-go v2.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/datadog-go v3.5.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/DataDog/datadog-go v4.4.0+incompatible h1:R7WqXWP4fIOAqWJtUKmSfuc7eDsBT58k9AY5WSHVosk=
 github.com/DataDog/datadog-go v4.4.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
+github.com/DataDog/datadog-go v4.8.2+incompatible h1:qbcKSx29aBLD+5QLvlQZlGmRMF/FfGqFLFev/1TDzRo=
+github.com/DataDog/datadog-go v4.8.2+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/opencensus-go-exporter-datadog v0.0.0-20190726131236-c7b72e836616/go.mod h1:gMGUEe16aZh0QN941HgDjwrdjU4iTthPoz2/AtDRADE=
 github.com/DataDog/opencensus-go-exporter-datadog v0.0.0-20200406135749-5c268882acf0/go.mod h1:/VV3EFO/hTNQZHAqaj+CPGy2+ioFrP4EX3iRwozubhQ=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
-github.com/Microsoft/go-winio v0.4.17 h1:iT12IBVClFevaf8PuVyi3UmZOVh4OqnaLxDTW2O6j3w=
 github.com/Microsoft/go-winio v0.4.17/go.mod h1:JPGBdM1cNvN/6ISo+n8V5iA4v8pBzdOpzfwIujj1a84=
+github.com/Microsoft/go-winio v0.5.0 h1:Elr9Wn+sGKPlkaBvwu4mTrxtmOp3F3yV9qhaHbXGjwU=
+github.com/Microsoft/go-winio v0.5.0/go.mod h1:JPGBdM1cNvN/6ISo+n8V5iA4v8pBzdOpzfwIujj1a84=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PuerkitoBio/purell v1.1.0/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/purell v1.1.1 h1:WEQqlqaGbrPkxLJWfBwQmfEAE1Z7ONdDLqrN38tNFfI=
@@ -21,7 +23,10 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/SKF/go-enlight-middleware v0.4.0 h1:GZCiFIVSo9GHHhlBWZRhUze5xa9Zr2vksYmfYim0LeA=
 github.com/SKF/go-enlight-middleware v0.4.0/go.mod h1:6MczgmHn4QL8yYTVEvnO/DbDWzTmLWIe1sbqAOlocVg=
 github.com/SKF/go-enlight-sdk/v2 v2.9.3/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4dfHGRcMpjfw7WM=
+github.com/SKF/go-eventsource v1.4.2 h1:c6xQc36EgxmffbjQMxhe9rsCMCfgOI7ZllQJ4Qj/PvA=
 github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScosdAWwxmDVds=
+github.com/SKF/go-eventsource/v2 v2.12.1 h1:EMXROTXi/rttgz3Pwe8LIqwCRNC2smL/flQ/F3XzxYA=
+github.com/SKF/go-eventsource/v2 v2.12.1/go.mod h1:zTsSyBtuLEqbF83f/yYML6JPaiS2aNJLnKgcAqtt04k=
 github.com/SKF/go-rest-utility v0.3.0/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-rest-utility v0.5.0/go.mod h1:yFHIQRiZpjQf2d43vuHbzXtKhT4l+FuQcuZMZIgFB/E=
 github.com/SKF/go-rest-utility v0.9.0 h1:gXcsyOhfqsWmqlbJYyIpG0PMdvFYlxE4Ws1GckDNpXE=
@@ -33,6 +38,7 @@ github.com/SKF/go-utility/v2 v2.0.1/go.mod h1:PweUWJgg67c9AYV/OInVGRdVh5gmLc0hZX
 github.com/SKF/go-utility/v2 v2.2.2/go.mod h1:58mYgUJwysqzdcAploXrLQpyjJSsfTjD2C3kzk6pcuQ=
 github.com/SKF/go-utility/v2 v2.12.0/go.mod h1:TB3CTJAXMADRimxbBka6sOA/mrkVmC2lwfXoR/jRJlA=
 github.com/SKF/go-utility/v2 v2.20.0/go.mod h1:VoC6KEYgutG6W8W073Jb8Uwd1MYXaB5sq6Ougkp9gY4=
+github.com/SKF/go-utility/v2 v2.24.0/go.mod h1:lPJAVtRO4lV/Gg8AGogofBNrdvQSl1TUISQmynxYmzA=
 github.com/SKF/go-utility/v2 v2.25.2/go.mod h1:vNsxDA+tBxVW1AuQmCI3GoZu4RNG76bt6as4ZW9rUWw=
 github.com/SKF/go-utility/v2 v2.25.3 h1:IEpOzSU8y3db+MkvMKJe2XjLWmdaaMP8X7bf9EXgc4k=
 github.com/SKF/go-utility/v2 v2.25.3/go.mod h1:uHFUYZL5p9HYstelDwQBuKV1NzzKS6i5xlV8l2BlFmc=
@@ -403,8 +409,9 @@ github.com/opentracing/opentracing-go v1.2.0/go.mod h1:GxEUsuufX4nBwe+T+Wl9TAgYr
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml v1.4.0/go.mod h1:PN7xzY2wHTK0K9p34ErDQMlFxa51Fk0OUruD3k1mMwo=
 github.com/pelletier/go-toml v1.7.0/go.mod h1:vwGMzjaWMwyfHwgIBhI2YUM4fB6nL6lVAvS1LBMMhTE=
-github.com/philhofer/fwd v1.0.0 h1:UbZqGr5Y38ApvM/V/jEljVxwocdweyH+vmYvRPBnbqQ=
 github.com/philhofer/fwd v1.0.0/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
+github.com/philhofer/fwd v1.1.1 h1:GdGcTjf5RNAxwS4QLsiMzJYj5KEvPJD3Abr261yRQXQ=
+github.com/philhofer/fwd v1.1.1/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=

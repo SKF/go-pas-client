@@ -3,9 +3,12 @@ package models
 import (
 	"testing"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
+	"github.com/SKF/go-utility/v2/uuid"
 )
 
 func Test_BandAlarm_FromInternal(t *testing.T) {
@@ -699,5 +702,331 @@ func Test_BandAlarmThreshold_ToInternal_IsNil(t *testing.T) {
 		actual := threshold.ToInternal()
 
 		assert.Nil(t, actual)
+	})
+}
+
+func Test_BandAlarmStatus_FromInternal(t *testing.T) {
+	tests := []struct {
+		given    *models.ModelsGetAlarmStatusResponseBandAlarm
+		expected *BandAlarmStatus
+	}{
+		{
+			given:    &models.ModelsGetAlarmStatusResponseBandAlarm{},
+			expected: &BandAlarmStatus{},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				Label: "10x RPM",
+			},
+			expected: &BandAlarmStatus{
+				Label: "10x RPM",
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				Status: i32p(1), // no data
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNoData,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				Status: i32p(2), // good
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusGood,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				Status: i32p(3), // alert
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusAlert,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				Status: i32p(4), // danger
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusDanger,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				TriggeringMeasurement: strfmt.UUID(uuid.EmptyUUID.String()),
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				MinFrequency: &models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(1), // fixed
+					Value:     f64p(100),
+				},
+			},
+			expected: &BandAlarmStatus{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     100,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				MinFrequency: &models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(2), // speed multiple
+					Value:     f64p(200),
+				},
+			},
+			expected: &BandAlarmStatus{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     200,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				MaxFrequency: &models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(1), // fixed
+					Value:     f64p(100),
+				},
+			},
+			expected: &BandAlarmStatus{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     100,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				MaxFrequency: &models.ModelsGetAlarmStatusResponseFrequency{
+					ValueType: i32p(2), // speed multiple
+					Value:     f64p(200),
+				},
+			},
+			expected: &BandAlarmStatus{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     200,
+				},
+			},
+		},
+		{
+			given: &models.ModelsGetAlarmStatusResponseBandAlarm{
+				CalculatedOverall: &models.ModelsBandCalculatedOverall{
+					Unit:  "gE",
+					Value: f64p(5),
+				},
+			},
+			expected: &BandAlarmStatus{
+				CalculatedOverall: &BandAlarmStatusCalculatedOverall{
+					Unit:  "gE",
+					Value: 5,
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := new(BandAlarmStatus)
+
+			actual.FromInternal(test.given)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_BandAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var status *BandAlarmStatus
+
+		status.FromInternal(&models.ModelsGetAlarmStatusResponseBandAlarm{})
+	})
+
+	assert.NotPanics(t, func() {
+		status := BandAlarmStatus{}
+
+		status.FromInternal(nil)
+	})
+}
+
+func Test_BandAlarmStatus_FromEvent(t *testing.T) {
+	tests := []struct {
+		given    events.BandAlarmStatus
+		expected *BandAlarmStatus
+	}{
+		{
+			given:    events.BandAlarmStatus{},
+			expected: &BandAlarmStatus{},
+		},
+		{
+			given: events.BandAlarmStatus{
+				Label: "10x RPM",
+			},
+			expected: &BandAlarmStatus{
+				Label: "10x RPM",
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				Status: 1, // no data
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusNoData,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				Status: 2, // good
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusGood,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				Status: 3, // alert
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusAlert,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				Status: 4, // danger
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					Status: AlarmStatusDanger,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				TriggeringMeasurement: uuid.EmptyUUID,
+			},
+			expected: &BandAlarmStatus{
+				GenericAlarmStatus: GenericAlarmStatus{
+					TriggeringMeasurement: uuid.EmptyUUID,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				MinFrequency: events.Frequency{
+					ValueType: 1, // fixed
+					Value:     100,
+				},
+			},
+			expected: &BandAlarmStatus{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     100,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				MinFrequency: events.Frequency{
+					ValueType: 2, // speed multiple
+					Value:     200,
+				},
+			},
+			expected: &BandAlarmStatus{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     200,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				MaxFrequency: events.Frequency{
+					ValueType: 1, // fixed
+					Value:     100,
+				},
+			},
+			expected: &BandAlarmStatus{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     100,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				MaxFrequency: events.Frequency{
+					ValueType: 2, // speed multiple
+					Value:     200,
+				},
+			},
+			expected: &BandAlarmStatus{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     200,
+				},
+			},
+		},
+		{
+			given: events.BandAlarmStatus{
+				CalculatedOverall: &events.CalculatedOverall{
+					Unit:  "gE",
+					Value: 5,
+				},
+			},
+			expected: &BandAlarmStatus{
+				CalculatedOverall: &BandAlarmStatusCalculatedOverall{
+					Unit:  "gE",
+					Value: 5,
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := new(BandAlarmStatus)
+
+			actual.FromEvent(test.given)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_BandAlarmStatus_FromEvent_IsNil(t *testing.T) {
+	assert.NotPanics(t, func() {
+		var status *BandAlarmStatus
+
+		status.FromEvent(events.BandAlarmStatus{})
 	})
 }
