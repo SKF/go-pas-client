@@ -20,6 +20,8 @@ func strfmtUUIDp(u strfmt.UUID) *strfmt.UUID {
 }
 
 func Test_Measurement_ToInternal(t *testing.T) {
+	t.Parallel()
+
 	var (
 		now           = time.UnixMilli(time.Now().UnixMilli()).UTC()
 		measurementID = uuid.EmptyUUID
@@ -129,6 +131,8 @@ func Test_Measurement_ToInternal(t *testing.T) {
 }
 
 func Test_Measurement_ToInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var m *Measurement
 

@@ -1,6 +1,14 @@
+// nolint:dupl
 package models
 
-import models "github.com/SKF/go-pas-client/internal/models"
+import (
+	"fmt"
+
+	"google.golang.org/protobuf/proto"
+
+	models "github.com/SKF/go-pas-client/internal/models"
+	pas "github.com/SKF/proto/v2/pas"
+)
 
 type Overall struct {
 	OuterHigh *float64
@@ -34,4 +42,36 @@ func (o *Overall) ToInternal() *models.ModelsOverall {
 		InnerLow:  o.InnerLow,
 		OuterLow:  o.OuterLow,
 	}
+}
+
+func (o *Overall) FromProto(buf []byte) error {
+	if o == nil || len(buf) == 0 {
+		return nil
+	}
+
+	var internal pas.Overall
+
+	if err := proto.Unmarshal(buf, &internal); err != nil {
+		return fmt.Errorf("decoding overall alarm failed: %w", err)
+	}
+
+	o.Unit = internal.Unit
+
+	if internal.OuterHigh != nil {
+		o.OuterHigh = &internal.OuterHigh.Value
+	}
+
+	if internal.InnerHigh != nil {
+		o.InnerHigh = &internal.InnerHigh.Value
+	}
+
+	if internal.InnerLow != nil {
+		o.InnerLow = &internal.InnerLow.Value
+	}
+
+	if internal.OuterLow != nil {
+		o.OuterLow = &internal.OuterLow.Value
+	}
+
+	return nil
 }

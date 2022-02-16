@@ -1,29 +1,176 @@
 package models
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
+	"github.com/SKF/go-eventsource/v2/eventsource"
+	"github.com/SKF/go-pas-client/internal/events"
 	"github.com/SKF/go-utility/v2/uuid"
+	pas "github.com/SKF/proto/v2/pas"
 )
 
 func Test_ThresholdEvent_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		given    []byte
+		set      func(*testing.T, *events.SetPointAlarmThresholdEvent)
 		expected *ThresholdEvent
 	}{
 		{
-			given: []byte(`
-{
-	"aggregateId": "00000000-0000-0000-0000-000000000000",
-	"userId": "00000000-0000-0000-0000-000000000000"
-}
-`),
+			set: func(t *testing.T, event *events.SetPointAlarmThresholdEvent) {
+				var err error
+
+				event.Overall, err = proto.Marshal(&pas.Overall{
+					Unit: "C",
+					OuterHigh: &pas.DoubleObject{
+						Value: 70,
+					},
+					InnerHigh: &pas.DoubleObject{
+						Value: 50,
+					},
+					InnerLow: &pas.DoubleObject{
+						Value: 20,
+					},
+					OuterLow: &pas.DoubleObject{
+						Value: 10,
+					},
+				})
+
+				require.NoError(t, err)
+			},
 			expected: &ThresholdEvent{
 				AggregateID: uuid.EmptyUUID,
 				UserID:      uuid.EmptyUUID,
+				Threshold: Threshold{
+					Overall: &Overall{
+						Unit:      "C",
+						OuterHigh: f64p(70),
+						InnerHigh: f64p(50),
+						InnerLow:  f64p(20),
+						OuterLow:  f64p(10),
+					},
+					BandAlarms: []BandAlarm{},
+					HALAlarms:  []HALAlarm{},
+				},
+			},
+		},
+		{
+			set: func(t *testing.T, event *events.SetPointAlarmThresholdEvent) {
+				var err error
+
+				event.RateOfChange, err = proto.Marshal(&pas.RateOfChange{
+					Unit: "gE",
+					OuterHigh: &pas.DoubleObject{
+						Value: 20,
+					},
+					InnerHigh: &pas.DoubleObject{
+						Value: 10,
+					},
+					InnerLow: &pas.DoubleObject{
+						Value: -10,
+					},
+					OuterLow: &pas.DoubleObject{
+						Value: -20,
+					},
+				})
+
+				require.NoError(t, err)
+			},
+			expected: &ThresholdEvent{
+				AggregateID: uuid.EmptyUUID,
+				UserID:      uuid.EmptyUUID,
+				Threshold: Threshold{
+					RateOfChange: &RateOfChange{
+						Unit:      "gE",
+						OuterHigh: f64p(20),
+						InnerHigh: f64p(10),
+						InnerLow:  f64p(-10),
+						OuterLow:  f64p(-20),
+					},
+					BandAlarms: []BandAlarm{},
+					HALAlarms:  []HALAlarm{},
+				},
+			},
+		},
+		{
+			set: func(t *testing.T, event *events.SetPointAlarmThresholdEvent) {
+				var err error
+
+				event.Inspection, err = proto.Marshal(&pas.Inspection{
+					Choices: []*pas.InspectionChoice{
+						{
+							Answer:      "good",
+							Instruction: "good?",
+							Status:      pas.AlarmStatus_GOOD,
+						},
+					},
+				})
+
+				require.NoError(t, err)
+			},
+			expected: &ThresholdEvent{
+				AggregateID: uuid.EmptyUUID,
+				UserID:      uuid.EmptyUUID,
+				Threshold: Threshold{
+					Inspection: &Inspection{
+						Choices: []InspectionChoice{
+							{
+								Answer:      "good",
+								Instruction: "good?",
+								Status:      AlarmStatusGood,
+							},
+						},
+					},
+					BandAlarms: []BandAlarm{},
+					HALAlarms:  []HALAlarm{},
+				},
+			},
+		},
+		{
+			set: func(t *testing.T, event *events.SetPointAlarmThresholdEvent) {
+				var err error
+
+				event.BandAlarms = make([][]byte, 1)
+
+				event.BandAlarms[0], err = proto.Marshal(&pas.BandAlarm{})
+
+				require.NoError(t, err)
+			},
+			expected: &ThresholdEvent{
+				AggregateID: uuid.EmptyUUID,
+				UserID:      uuid.EmptyUUID,
+				Threshold: Threshold{
+					BandAlarms: []BandAlarm{
+						{},
+					},
+					HALAlarms: []HALAlarm{},
+				},
+			},
+		},
+		{
+			set: func(t *testing.T, event *events.SetPointAlarmThresholdEvent) {
+				var err error
+
+				event.HalAlarms = make([][]byte, 1)
+
+				event.HalAlarms[0], err = proto.Marshal(&pas.HalAlarm{})
+
+				require.NoError(t, err)
+			},
+			expected: &ThresholdEvent{
+				AggregateID: uuid.EmptyUUID,
+				UserID:      uuid.EmptyUUID,
+				Threshold: Threshold{
+					BandAlarms: []BandAlarm{},
+					HALAlarms: []HALAlarm{
+						{},
+					},
+				},
 			},
 		},
 	}
@@ -32,9 +179,21 @@ func Test_ThresholdEvent_FromInternal(t *testing.T) {
 		test := test
 
 		t.Run("", func(t *testing.T) {
+			given := &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+			}
+
+			test.set(t, given)
+
+			buf, err := json.Marshal(given)
+			require.NoError(t, err)
+
 			actual := new(ThresholdEvent)
 
-			err := actual.FromInternal(test.given)
+			err = actual.FromInternal(buf)
 			require.NoError(t, err)
 
 			assert.Equal(t, test.expected, actual)
@@ -43,6 +202,8 @@ func Test_ThresholdEvent_FromInternal(t *testing.T) {
 }
 
 func Test_ThresholdEvent_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var event *ThresholdEvent
 
@@ -52,14 +213,91 @@ func Test_ThresholdEvent_FromInternal_IsNil(t *testing.T) {
 }
 
 func Test_ThresholdEvent_FromInternal_InvalidBody(t *testing.T) {
-	event := &ThresholdEvent{}
+	t.Parallel()
+
+	event := new(ThresholdEvent)
 
 	err := event.FromInternal([]byte(`not-valid`))
 
 	assert.Error(t, err)
 }
 
+func Test_ThresholdEvent_FromInternal_InvalidEncodedThreshold(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given *events.SetPointAlarmThresholdEvent
+	}{
+		{
+			given: &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+				Overall: []byte("not-valid"),
+			},
+		},
+		{
+			given: &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+				RateOfChange: []byte("not-valid"),
+			},
+		},
+		{
+			given: &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+				Inspection: []byte("not-valid"),
+			},
+		},
+		{
+			given: &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+				BandAlarms: [][]byte{
+					[]byte("not-valid"),
+				},
+			},
+		},
+		{
+			given: &events.SetPointAlarmThresholdEvent{
+				BaseEvent: &eventsource.BaseEvent{
+					AggregateID: uuid.EmptyUUID.String(),
+					UserID:      uuid.EmptyUUID.String(),
+				},
+				HalAlarms: [][]byte{
+					[]byte("not-valid"),
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			buf, err := json.Marshal(test.given)
+			require.NoError(t, err)
+
+			event := new(ThresholdEvent)
+
+			err = event.FromInternal(buf)
+
+			assert.Error(t, err)
+		})
+	}
+}
+
 func Test_AlarmStatusEvent_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    []byte
 		expected *AlarmStatusEvent
@@ -359,6 +597,8 @@ func Test_AlarmStatusEvent_FromInternal(t *testing.T) {
 }
 
 func Test_AlarmStatusEvent_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var event *AlarmStatusEvent
 
@@ -367,7 +607,9 @@ func Test_AlarmStatusEvent_FromInternal_IsNil(t *testing.T) {
 }
 
 func Test_AlarmStatusEvent_FromInternal_InvalidBody(t *testing.T) {
-	event := &AlarmStatusEvent{}
+	t.Parallel()
+
+	event := new(AlarmStatusEvent)
 
 	err := event.FromInternal([]byte(`not-valid`))
 

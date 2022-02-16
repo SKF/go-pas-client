@@ -407,6 +407,8 @@ func Test_Threshold_ToInternal(t *testing.T) {
 }
 
 func Test_Threshold_ToInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var threshold *Threshold
 

@@ -5,10 +5,13 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
+	pas "github.com/SKF/proto/v2/pas"
 )
 
 func Test_BandAlarm_FromInternal(t *testing.T) {
@@ -16,15 +19,15 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 
 	tests := []struct {
 		given    *models.ModelsBandAlarm
-		expected BandAlarm
+		expected *BandAlarm
 	}{
 		{
 			given:    nil,
-			expected: BandAlarm{},
+			expected: &BandAlarm{},
 		},
 		{
 			given:    &models.ModelsBandAlarm{},
-			expected: BandAlarm{},
+			expected: &BandAlarm{},
 		},
 		{
 			given: &models.ModelsBandAlarm{
@@ -33,7 +36,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					Value:     f64p(2.0),
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				MaxFrequency: BandAlarmFrequency{
 					ValueType: BandAlarmFrequencyFixed,
 					Value:     2.0,
@@ -47,7 +50,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					Value:     f64p(1.0),
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				MinFrequency: BandAlarmFrequency{
 					ValueType: BandAlarmFrequencyFixed,
 					Value:     1.0,
@@ -61,7 +64,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					Value:     f64p(2.0),
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				MaxFrequency: BandAlarmFrequency{
 					ValueType: BandAlarmFrequencySpeedMultiple,
 					Value:     2.0,
@@ -75,7 +78,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					Value:     f64p(1.0),
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				MinFrequency: BandAlarmFrequency{
 					ValueType: BandAlarmFrequencySpeedMultiple,
 					Value:     1.0,
@@ -92,7 +95,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				OverallThreshold: &BandAlarmOverallThreshold{
 					Unit: "gE",
 					UpperAlert: &BandAlarmThreshold{
@@ -112,7 +115,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				OverallThreshold: &BandAlarmOverallThreshold{
 					Unit: "gE",
 					UpperAlert: &BandAlarmThreshold{
@@ -132,7 +135,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				OverallThreshold: &BandAlarmOverallThreshold{
 					Unit: "gE",
 					UpperDanger: &BandAlarmThreshold{
@@ -152,7 +155,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 					},
 				},
 			},
-			expected: BandAlarm{
+			expected: &BandAlarm{
 				OverallThreshold: &BandAlarmOverallThreshold{
 					Unit: "gE",
 					UpperDanger: &BandAlarmThreshold{
@@ -168,7 +171,7 @@ func Test_BandAlarm_FromInternal(t *testing.T) {
 		test := test
 
 		t.Run("", func(t *testing.T) {
-			actual := BandAlarm{}
+			actual := new(BandAlarm)
 
 			actual.FromInternal(test.given)
 
@@ -187,7 +190,7 @@ func Test_BandAlarm_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		bandAlarm := &BandAlarm{}
+		bandAlarm := new(BandAlarm)
 
 		bandAlarm.FromInternal(nil)
 	})
@@ -413,6 +416,214 @@ func Test_BandAlarm_ToInternal_IsNil(t *testing.T) {
 	})
 }
 
+func Test_BandAlarm_FromProto(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given    *pas.BandAlarm
+		expected *BandAlarm
+	}{
+		{
+			given: &pas.BandAlarm{
+				MaxFrequency: &pas.Frequency{
+					ValueType: pas.Frequency_FIXED,
+					Value: &pas.DoubleObject{
+						Value: 2.0,
+					},
+				},
+			},
+			expected: &BandAlarm{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     2.0,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				MinFrequency: &pas.Frequency{
+					ValueType: pas.Frequency_FIXED,
+					Value: &pas.DoubleObject{
+						Value: 1.0,
+					},
+				},
+			},
+			expected: &BandAlarm{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencyFixed,
+					Value:     1.0,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				MaxFrequency: &pas.Frequency{
+					ValueType: pas.Frequency_SPEED_MULTIPLE,
+					Value: &pas.DoubleObject{
+						Value: 2.0,
+					},
+				},
+			},
+			expected: &BandAlarm{
+				MaxFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     2.0,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				MinFrequency: &pas.Frequency{
+					ValueType: pas.Frequency_SPEED_MULTIPLE,
+					Value: &pas.DoubleObject{
+						Value: 1.0,
+					},
+				},
+			},
+			expected: &BandAlarm{
+				MinFrequency: BandAlarmFrequency{
+					ValueType: BandAlarmFrequencySpeedMultiple,
+					Value:     1.0,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				OverallThreshold: &pas.BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperAlert: &pas.ThresholdValue{
+						ValueType: pas.ThresholdValue_ABSOLUTE,
+						Value: &pas.DoubleObject{
+							Value: 10,
+						},
+					},
+				},
+			},
+			expected: &BandAlarm{
+				OverallThreshold: &BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperAlert: &BandAlarmThreshold{
+						ValueType: BandAlarmThresholdTypeAbsolute,
+						Value:     10,
+					},
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				OverallThreshold: &pas.BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperAlert: &pas.ThresholdValue{
+						ValueType: pas.ThresholdValue_RELATIVE_FULLSCALE,
+						Value: &pas.DoubleObject{
+							Value: 10,
+						},
+					},
+				},
+			},
+			expected: &BandAlarm{
+				OverallThreshold: &BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperAlert: &BandAlarmThreshold{
+						ValueType: BandAlarmThresholdTypeRelativeFullscale,
+						Value:     10,
+					},
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				OverallThreshold: &pas.BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperDanger: &pas.ThresholdValue{
+						ValueType: pas.ThresholdValue_ABSOLUTE,
+						Value: &pas.DoubleObject{
+							Value: 10,
+						},
+					},
+				},
+			},
+			expected: &BandAlarm{
+				OverallThreshold: &BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperDanger: &BandAlarmThreshold{
+						ValueType: BandAlarmThresholdTypeAbsolute,
+						Value:     10,
+					},
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarm{
+				OverallThreshold: &pas.BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperDanger: &pas.ThresholdValue{
+						ValueType: pas.ThresholdValue_RELATIVE_FULLSCALE,
+						Value: &pas.DoubleObject{
+							Value: 10,
+						},
+					},
+				},
+			},
+			expected: &BandAlarm{
+				OverallThreshold: &BandAlarmOverallThreshold{
+					Unit: "gE",
+					UpperDanger: &BandAlarmThreshold{
+						ValueType: BandAlarmThresholdTypeRelativeFullscale,
+						Value:     10,
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			buf, err := proto.Marshal(test.given)
+			require.NoError(t, err)
+
+			actual := new(BandAlarm)
+
+			err = actual.FromProto(buf)
+			require.NoError(t, err)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_BandAlarm_FromProto_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var actual *BandAlarm
+
+		err := actual.FromProto([]byte{})
+
+		assert.NoError(t, err)
+	})
+
+	assert.NotPanics(t, func() {
+		actual := new(BandAlarm)
+
+		err := actual.FromProto(nil)
+
+		assert.NoError(t, err)
+	})
+}
+
+func Test_BandAlarm_FromProto_InvalidBody(t *testing.T) {
+	t.Parallel()
+
+	actual := new(BandAlarm)
+
+	err := actual.FromProto([]byte("not-valid"))
+
+	assert.Error(t, err)
+}
+
 func Test_BandAlarmFrequency_FromInternalThreshold_IsNil(t *testing.T) {
 	t.Parallel()
 
@@ -439,7 +650,7 @@ func Test_BandAlarmFrequency_FromInternalAlarmStatus_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		frequency := &BandAlarmFrequency{}
+		frequency := new(BandAlarmFrequency)
 
 		frequency.FromInternalAlarmStatus(nil)
 	})
@@ -449,11 +660,27 @@ func Test_BandAlarmFrequency_ToInternal_IsNil(t *testing.T) {
 	t.Parallel()
 
 	assert.NotPanics(t, func() {
-		var thisIsNil *BandAlarmFrequency
+		var frequency *BandAlarmFrequency
 
-		actual := thisIsNil.ToInternal()
+		actual := frequency.ToInternal()
 
 		assert.Nil(t, actual)
+	})
+}
+
+func Test_BandAlarmFrequency_FromProto_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var frequency *BandAlarmFrequency
+
+		frequency.FromProto(&pas.Frequency{})
+	})
+
+	assert.NotPanics(t, func() {
+		frequency := new(BandAlarmFrequency)
+
+		frequency.FromProto(nil)
 	})
 }
 
@@ -462,21 +689,21 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 
 	tests := []struct {
 		given    *models.ModelsBandAlarmOverallThreshold
-		expected BandAlarmOverallThreshold
+		expected *BandAlarmOverallThreshold
 	}{
 		{
 			given:    nil,
-			expected: BandAlarmOverallThreshold{},
+			expected: &BandAlarmOverallThreshold{},
 		},
 		{
 			given:    &models.ModelsBandAlarmOverallThreshold{},
-			expected: BandAlarmOverallThreshold{},
+			expected: &BandAlarmOverallThreshold{},
 		},
 		{
 			given: &models.ModelsBandAlarmOverallThreshold{
 				UpperAlert: &models.ModelsBandAlarmThreshold{},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperAlert: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeUnknown,
 					Value:     0,
@@ -490,7 +717,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 					Value:     f64p(1),
 				},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperAlert: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeAbsolute,
 					Value:     1,
@@ -504,7 +731,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 					Value:     f64p(2),
 				},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperAlert: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeRelativeFullscale,
 					Value:     2,
@@ -515,7 +742,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 			given: &models.ModelsBandAlarmOverallThreshold{
 				UpperDanger: &models.ModelsBandAlarmThreshold{},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperDanger: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeUnknown,
 					Value:     0,
@@ -529,7 +756,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 					Value:     f64p(1),
 				},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperDanger: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeAbsolute,
 					Value:     1,
@@ -543,7 +770,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 					Value:     f64p(2),
 				},
 			},
-			expected: BandAlarmOverallThreshold{
+			expected: &BandAlarmOverallThreshold{
 				UpperDanger: &BandAlarmThreshold{
 					ValueType: BandAlarmThresholdTypeRelativeFullscale,
 					Value:     2,
@@ -556,7 +783,7 @@ func Test_BandAlarmOverallThreshold_FromInternal(t *testing.T) {
 		test := test
 
 		t.Run("", func(t *testing.T) {
-			actual := BandAlarmOverallThreshold{}
+			actual := new(BandAlarmOverallThreshold)
 
 			actual.FromInternal(test.given)
 
@@ -575,7 +802,7 @@ func Test_BandAlarmOverallThreshold_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		threshold := &BandAlarmOverallThreshold{}
+		threshold := new(BandAlarmOverallThreshold)
 
 		threshold.FromInternal(nil)
 	})
@@ -677,6 +904,108 @@ func Test_BandAlarmOverallThreshold_ToInternal_IsNil(t *testing.T) {
 	})
 }
 
+func Test_BandAlarmOverallThreshold_FromProto(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		given    *pas.BandAlarmOverallThreshold
+		expected *BandAlarmOverallThreshold
+	}{
+		{
+			given: &pas.BandAlarmOverallThreshold{
+				UpperAlert: &pas.ThresholdValue{
+					ValueType: pas.ThresholdValue_ABSOLUTE,
+					Value: &pas.DoubleObject{
+						Value: 1,
+					},
+				},
+			},
+			expected: &BandAlarmOverallThreshold{
+				UpperAlert: &BandAlarmThreshold{
+					ValueType: BandAlarmThresholdTypeAbsolute,
+					Value:     1,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarmOverallThreshold{
+				UpperAlert: &pas.ThresholdValue{
+					ValueType: pas.ThresholdValue_RELATIVE_FULLSCALE,
+					Value: &pas.DoubleObject{
+						Value: 2,
+					},
+				},
+			},
+			expected: &BandAlarmOverallThreshold{
+				UpperAlert: &BandAlarmThreshold{
+					ValueType: BandAlarmThresholdTypeRelativeFullscale,
+					Value:     2,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarmOverallThreshold{
+				UpperDanger: &pas.ThresholdValue{
+					ValueType: pas.ThresholdValue_ABSOLUTE,
+					Value: &pas.DoubleObject{
+						Value: 1,
+					},
+				},
+			},
+			expected: &BandAlarmOverallThreshold{
+				UpperDanger: &BandAlarmThreshold{
+					ValueType: BandAlarmThresholdTypeAbsolute,
+					Value:     1,
+				},
+			},
+		},
+		{
+			given: &pas.BandAlarmOverallThreshold{
+				UpperDanger: &pas.ThresholdValue{
+					ValueType: pas.ThresholdValue_RELATIVE_FULLSCALE,
+					Value: &pas.DoubleObject{
+						Value: 2,
+					},
+				},
+			},
+			expected: &BandAlarmOverallThreshold{
+				UpperDanger: &BandAlarmThreshold{
+					ValueType: BandAlarmThresholdTypeRelativeFullscale,
+					Value:     2,
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+
+		t.Run("", func(t *testing.T) {
+			actual := new(BandAlarmOverallThreshold)
+
+			actual.FromProto(test.given)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
+func Test_BandAlarmOverallThreshold_FromProto_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var threshold *BandAlarmOverallThreshold
+
+		threshold.FromProto(&pas.BandAlarmOverallThreshold{})
+	})
+
+	assert.NotPanics(t, func() {
+		threshold := new(BandAlarmOverallThreshold)
+
+		threshold.FromProto(nil)
+	})
+}
+
 func Test_BandAlarmThreshold_FromInternal_IsNil(t *testing.T) {
 	t.Parallel()
 
@@ -687,7 +1016,7 @@ func Test_BandAlarmThreshold_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		threshold := &BandAlarmThreshold{}
+		threshold := new(BandAlarmThreshold)
 
 		threshold.FromInternal(nil)
 	})
@@ -705,7 +1034,25 @@ func Test_BandAlarmThreshold_ToInternal_IsNil(t *testing.T) {
 	})
 }
 
+func Test_BandAlarmThreshold_FromProto_IsNil(t *testing.T) {
+	t.Parallel()
+
+	assert.NotPanics(t, func() {
+		var threshold *BandAlarmThreshold
+
+		threshold.FromProto(&pas.ThresholdValue{})
+	})
+
+	assert.NotPanics(t, func() {
+		threshold := &BandAlarmThreshold{}
+
+		threshold.FromProto(nil)
+	})
+}
+
 func Test_BandAlarmStatus_FromInternal(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    *models.ModelsGetAlarmStatusResponseBandAlarm
 		expected *BandAlarmStatus
@@ -858,6 +1205,8 @@ func Test_BandAlarmStatus_FromInternal(t *testing.T) {
 }
 
 func Test_BandAlarmStatus_FromInternal_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *BandAlarmStatus
 
@@ -865,13 +1214,15 @@ func Test_BandAlarmStatus_FromInternal_IsNil(t *testing.T) {
 	})
 
 	assert.NotPanics(t, func() {
-		status := BandAlarmStatus{}
+		status := new(BandAlarmStatus)
 
 		status.FromInternal(nil)
 	})
 }
 
 func Test_BandAlarmStatus_FromEvent(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		given    events.BandAlarmStatus
 		expected *BandAlarmStatus
@@ -1024,6 +1375,8 @@ func Test_BandAlarmStatus_FromEvent(t *testing.T) {
 }
 
 func Test_BandAlarmStatus_FromEvent_IsNil(t *testing.T) {
+	t.Parallel()
+
 	assert.NotPanics(t, func() {
 		var status *BandAlarmStatus
 

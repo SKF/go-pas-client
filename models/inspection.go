@@ -1,6 +1,13 @@
 package models
 
-import models "github.com/SKF/go-pas-client/internal/models"
+import (
+	"fmt"
+
+	"google.golang.org/protobuf/proto"
+
+	models "github.com/SKF/go-pas-client/internal/models"
+	pas "github.com/SKF/proto/v2/pas"
+)
 
 type (
 	Inspection struct {
@@ -67,4 +74,30 @@ func (i *InspectionChoice) ToInternal() *models.ModelsInspectionChoice {
 		Instruction: i.Instruction,
 		Status:      &status,
 	}
+}
+
+func (i *Inspection) FromProto(buf []byte) error {
+	var internal pas.Inspection
+
+	if err := proto.Unmarshal(buf, &internal); err != nil {
+		return fmt.Errorf("decoding inspection alarm failed: %w", err)
+	}
+
+	i.Choices = make([]InspectionChoice, len(internal.Choices))
+
+	for idx, choice := range internal.Choices {
+		i.Choices[idx].FromProto(choice)
+	}
+
+	return nil
+}
+
+func (i *InspectionChoice) FromProto(internal *pas.InspectionChoice) {
+	if i == nil || internal == nil {
+		return
+	}
+
+	i.Answer = internal.Answer
+	i.Instruction = internal.Instruction
+	i.Status = AlarmStatusType(internal.Status)
 }

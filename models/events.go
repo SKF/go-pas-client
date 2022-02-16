@@ -24,6 +24,7 @@ type ThresholdEvent struct {
 	Threshold   Threshold
 }
 
+// nolint:cyclop
 func (t *ThresholdEvent) FromInternal(buf []byte) error {
 	if t == nil {
 		return nil
@@ -37,6 +38,48 @@ func (t *ThresholdEvent) FromInternal(buf []byte) error {
 
 	t.AggregateID = uuid.UUID(internal.BaseEvent.AggregateID)
 	t.UserID = uuid.UUID(internal.BaseEvent.UserID)
+	t.Threshold.ThresholdType = ThresholdType(internal.Type)
+	t.Threshold.FullScale = internal.FullScale
+
+	if len(internal.Overall) > 0 {
+		t.Threshold.Overall = new(Overall)
+
+		if err := t.Threshold.Overall.FromProto(internal.Overall); err != nil {
+			return err
+		}
+	}
+
+	if len(internal.RateOfChange) > 0 {
+		t.Threshold.RateOfChange = new(RateOfChange)
+
+		if err := t.Threshold.RateOfChange.FromProto(internal.RateOfChange); err != nil {
+			return err
+		}
+	}
+
+	if len(internal.Inspection) > 0 {
+		t.Threshold.Inspection = new(Inspection)
+
+		if err := t.Threshold.Inspection.FromProto(internal.Inspection); err != nil {
+			return err
+		}
+	}
+
+	t.Threshold.BandAlarms = make([]BandAlarm, len(internal.BandAlarms))
+
+	for i, threshold := range internal.BandAlarms {
+		if err := t.Threshold.BandAlarms[i].FromProto(threshold); err != nil {
+			return fmt.Errorf("decoding band alarm threshold failed: %w", err)
+		}
+	}
+
+	t.Threshold.HALAlarms = make([]HALAlarm, len(internal.HalAlarms))
+
+	for i, threshold := range internal.HalAlarms {
+		if err := t.Threshold.HALAlarms[i].FromProto(threshold); err != nil {
+			return fmt.Errorf("decoding HAL alarm threshold failed: %w", err)
+		}
+	}
 
 	return nil
 }
