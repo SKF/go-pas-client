@@ -10,7 +10,7 @@ Refer to [example/](/example/) for examples of how to use this library.
 
 ## Patching thresholds
 
-The client model is using [github.com/wI2L/jsondiff](https://pkg.go.dev/github.com/wI2L/jsondiff) to create valid patches. Refer to the [example](/blob/main/example/main.go#L128) for an example of its usage.
+The client model is using [github.com/wI2L/jsondiff](https://pkg.go.dev/github.com/wI2L/jsondiff) to create valid patches. Refer to the [example](/example/main.go#L128) for an example of its usage.
 
 ## Error handling
 
