@@ -8,9 +8,13 @@ Refer to the Swagger [specification](https://api.point-alarm-status.sandbox.iot.
 
 Refer to [example/](/example/) for examples of how to use this library.
 
+## Patching thresholds
+
+The client model is using [github.com/wI2L/jsondiff](https://pkg.go.dev/github.com/wI2L/jsondiff) to create valid patches. Refer to the [example](/blob/main/example/main.go#L128) for an example of its usage.
+
 ## Error handling
 
-Errors returned by the API are decoded into problems from the [`github.com/SKF/go-rest-utility/problems`](https://github.com/SKF/go-rest-utility) package before being returned by the client functions. This makes it possible to use the standard [`error`](https://pkg.go.dev/errors) package to do error checking on any returned error.
+Errors returned by the API are decoded into problems from the [`github.com/SKF/go-rest-utility`](https://github.com/SKF/go-rest-utility) package before being returned by the client functions. This makes it possible to use the standard [`error`](https://pkg.go.dev/errors) package to do error checking on any returned error.
 
 E.g. if a faulty threshold is supplied when setting an alarm threshold you can check if it's a validation error (and what the validation errors are) using the following code.
 
@@ -28,14 +32,6 @@ if err != nil {
   if errors.As(err, &problem) {
     for _, reason := range problem.Reasons {
       fmt.Println(reason)
-    }
-  }
-
-  var problem problems.BasicProblem
-
-  if errors.As(err, &problem) {
-    switch problem.Status {
-      case http.StatusInternalServerError:
     }
   }
 }
