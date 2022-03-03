@@ -51,11 +51,7 @@ func (b *BandAlarm) FromInternal(internal *models.ModelsBandAlarm) {
 	}
 }
 
-func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
-	if b == nil {
-		return nil
-	}
-
+func (b BandAlarm) ToInternal() *models.ModelsBandAlarm {
 	return &models.ModelsBandAlarm{
 		Label:            b.Label,
 		OverallThreshold: b.OverallThreshold.ToInternal(),
