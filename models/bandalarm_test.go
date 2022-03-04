@@ -204,10 +204,6 @@ func Test_BandAlarm_ToInternal(t *testing.T) {
 		expected *models.ModelsBandAlarm
 	}{
 		{
-			given:    nil,
-			expected: nil,
-		},
-		{
 			given: &BandAlarm{
 				MaxFrequency: BandAlarmFrequency{
 					ValueType: BandAlarmFrequencyFixed,
