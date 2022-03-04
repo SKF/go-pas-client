@@ -162,10 +162,6 @@ func Test_Inspection_ToInternal(t *testing.T) {
 		expected *models.ModelsInspection
 	}{
 		{
-			given:    nil,
-			expected: nil,
-		},
-		{
 			given: &Inspection{
 				Choices: []InspectionChoice{},
 			},
@@ -264,18 +260,6 @@ func Test_Inspection_ToInternal(t *testing.T) {
 			assert.Equal(t, test.expected, actual)
 		})
 	}
-}
-
-func Test_InspectionChoice_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var choice *InspectionChoice
-
-		actual := choice.ToInternal()
-
-		assert.Nil(t, actual)
-	})
 }
 
 func Test_InspectionChoice_FromProto(t *testing.T) {

@@ -44,11 +44,7 @@ func (h *HALAlarm) FromInternal(internal *models.ModelsHALAlarm) {
 	}
 }
 
-func (h *HALAlarm) ToInternal() *models.ModelsHALAlarm {
-	if h == nil {
-		return nil
-	}
-
+func (h HALAlarm) ToInternal() *models.ModelsHALAlarm {
 	halAlarm := &models.ModelsHALAlarm{
 		Label:        h.Label,
 		HalAlarmType: string(h.HALAlarmType),
@@ -58,13 +54,17 @@ func (h *HALAlarm) ToInternal() *models.ModelsHALAlarm {
 	}
 
 	if h.Bearing != nil {
-		halAlarm.Bearing = &models.ModelsBearing{
-			Manufacturer: &h.Bearing.Manufacturer,
-			ModelNumber:  &h.Bearing.ModelNumber,
-		}
+		halAlarm.Bearing = h.Bearing.ToInternal()
 	}
 
 	return halAlarm
+}
+
+func (b Bearing) ToInternal() *models.ModelsBearing {
+	return &models.ModelsBearing{
+		Manufacturer: &b.Manufacturer,
+		ModelNumber:  &b.ModelNumber,
+	}
 }
 
 func (h *HALAlarm) FromProto(buf []byte) error {

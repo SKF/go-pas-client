@@ -89,10 +89,6 @@ func Test_RateOfChange_ToInternal(t *testing.T) {
 		expected *models.ModelsRateOfChange
 	}{
 		{
-			given:    nil,
-			expected: nil,
-		},
-		{
 			given:    &RateOfChange{},
 			expected: &models.ModelsRateOfChange{},
 		},
@@ -131,18 +127,6 @@ func Test_RateOfChange_ToInternal(t *testing.T) {
 			assert.Equal(t, test.expected, actual)
 		})
 	}
-}
-
-func Test_RateOfChange_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var rateOfChange *RateOfChange
-
-		actual := rateOfChange.ToInternal()
-
-		assert.Nil(t, actual)
-	})
 }
 
 func Test_RateOfChange_Convert(t *testing.T) {

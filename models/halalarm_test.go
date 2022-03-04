@@ -125,10 +125,6 @@ func Test_HALAlarm_ToInternal(t *testing.T) {
 		expected *models.ModelsHALAlarm
 	}{
 		{
-			given:    nil,
-			expected: nil,
-		},
-		{
 			given:    &HALAlarm{},
 			expected: &models.ModelsHALAlarm{},
 		},
@@ -199,18 +195,6 @@ func Test_HALAlarm_ToInternal(t *testing.T) {
 			assert.Equal(t, test.expected, actual)
 		})
 	}
-}
-
-func Test_HALAlarm_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var halAlarm *HALAlarm
-
-		actual := halAlarm.ToInternal()
-
-		assert.Nil(t, actual)
-	})
 }
 
 func Test_HALAlarm_FromProto(t *testing.T) {

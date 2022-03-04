@@ -89,10 +89,6 @@ func Test_Overall_ToInternal(t *testing.T) {
 		expected *models.ModelsOverall
 	}{
 		{
-			given:    nil,
-			expected: nil,
-		},
-		{
 			given:    &Overall{},
 			expected: &models.ModelsOverall{},
 		},
@@ -131,18 +127,6 @@ func Test_Overall_ToInternal(t *testing.T) {
 			assert.Equal(t, test.expected, actual)
 		})
 	}
-}
-
-func Test_Overall_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var overall *Overall
-
-		actual := overall.ToInternal()
-
-		assert.Nil(t, actual)
-	})
 }
 
 func Test_Overall_Convert(t *testing.T) {
