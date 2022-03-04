@@ -400,18 +400,6 @@ func Test_BandAlarm_ToInternal(t *testing.T) {
 	}
 }
 
-func Test_BandAlarm_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var bandAlarm *BandAlarm
-
-		actual := bandAlarm.ToInternal()
-
-		assert.Nil(t, actual)
-	})
-}
-
 func Test_BandAlarm_FromProto(t *testing.T) {
 	t.Parallel()
 
