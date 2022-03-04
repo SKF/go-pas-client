@@ -30,11 +30,7 @@ func (o *Overall) FromInternal(internal *models.ModelsOverall) {
 	o.OuterLow = internal.OuterLow
 }
 
-func (o *Overall) ToInternal() *models.ModelsOverall {
-	if o == nil {
-		return nil
-	}
-
+func (o Overall) ToInternal() *models.ModelsOverall {
 	return &models.ModelsOverall{
 		Unit:      o.Unit,
 		OuterHigh: o.OuterHigh,

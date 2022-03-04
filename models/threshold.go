@@ -65,22 +65,30 @@ func (t *Threshold) FromInternal(internal models.ModelsGetPointAlarmThresholdRes
 	return nil
 }
 
-func (t *Threshold) ToInternal() models.ModelsSetPointAlarmThresholdRequest {
-	if t == nil {
-		return models.ModelsSetPointAlarmThresholdRequest{} // nolint:exhaustivestruct
-	}
-
+func (t Threshold) ToInternal() models.ModelsSetPointAlarmThresholdRequest {
 	thresholdType := int32(t.ThresholdType)
 
 	threshold := models.ModelsSetPointAlarmThresholdRequest{
 		Origin:        nil,
 		ThresholdType: &thresholdType,
-		Overall:       t.Overall.ToInternal(),
-		RateOfChange:  t.RateOfChange.ToInternal(),
-		Inspection:    t.Inspection.ToInternal(),
 		FullScale:     t.FullScale,
+		Overall:       nil,
+		RateOfChange:  nil,
+		Inspection:    nil,
 		BandAlarms:    make([]*models.ModelsBandAlarm, len(t.BandAlarms)),
 		HalAlarms:     make([]*models.ModelsHALAlarm, len(t.HALAlarms)),
+	}
+
+	if t.Overall != nil {
+		threshold.Overall = t.Overall.ToInternal()
+	}
+
+	if t.RateOfChange != nil {
+		threshold.RateOfChange = t.RateOfChange.ToInternal()
+	}
+
+	if t.Inspection != nil {
+		threshold.Inspection = t.Inspection.ToInternal()
 	}
 
 	for i, bandAlarm := range t.BandAlarms {

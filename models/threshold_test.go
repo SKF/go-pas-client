@@ -393,6 +393,158 @@ func Test_Threshold_ToInternal(t *testing.T) {
 				},
 			},
 		},
+		{
+			given: &Threshold{
+				BandAlarms: []BandAlarm{
+					{
+						OverallThreshold: &BandAlarmOverallThreshold{
+							UpperAlert: &BandAlarmThreshold{
+								ValueType: BandAlarmThresholdTypeAbsolute,
+								Value:     10,
+							},
+							UpperDanger: &BandAlarmThreshold{
+								ValueType: BandAlarmThresholdTypeAbsolute,
+								Value:     20,
+							},
+							Unit: "gE",
+						},
+						Label: "foo",
+						MinFrequency: BandAlarmFrequency{
+							ValueType: BandAlarmFrequencyFixed,
+							Value:     1,
+						},
+						MaxFrequency: BandAlarmFrequency{
+							ValueType: BandAlarmFrequencyFixed,
+							Value:     2,
+						},
+					},
+					{
+						OverallThreshold: &BandAlarmOverallThreshold{
+							UpperAlert: &BandAlarmThreshold{
+								ValueType: BandAlarmThresholdTypeRelativeFullscale,
+								Value:     100,
+							},
+							UpperDanger: &BandAlarmThreshold{
+								ValueType: BandAlarmThresholdTypeRelativeFullscale,
+								Value:     200,
+							},
+							Unit: "gE",
+						},
+						Label: "bar",
+						MinFrequency: BandAlarmFrequency{
+							ValueType: BandAlarmFrequencySpeedMultiple,
+							Value:     10,
+						},
+						MaxFrequency: BandAlarmFrequency{
+							ValueType: BandAlarmFrequencySpeedMultiple,
+							Value:     22,
+						},
+					},
+				},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				BandAlarms: []*models.ModelsBandAlarm{
+					{
+						OverallThreshold: &models.ModelsBandAlarmOverallThreshold{
+							UpperAlert: &models.ModelsBandAlarmThreshold{
+								ValueType: i32p(int32(BandAlarmThresholdTypeAbsolute)),
+								Value:     f64p(10),
+							},
+							UpperDanger: &models.ModelsBandAlarmThreshold{
+								ValueType: i32p(int32(BandAlarmThresholdTypeAbsolute)),
+								Value:     f64p(20),
+							},
+							Unit: "gE",
+						},
+						Label: "foo",
+						MinFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(int32(BandAlarmFrequencyFixed)),
+							Value:     f64p(1),
+						},
+						MaxFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(int32(BandAlarmFrequencyFixed)),
+							Value:     f64p(2),
+						},
+					},
+					{
+						OverallThreshold: &models.ModelsBandAlarmOverallThreshold{
+							UpperAlert: &models.ModelsBandAlarmThreshold{
+								ValueType: i32p(int32(BandAlarmThresholdTypeRelativeFullscale)),
+								Value:     f64p(100),
+							},
+							UpperDanger: &models.ModelsBandAlarmThreshold{
+								ValueType: i32p(int32(BandAlarmThresholdTypeRelativeFullscale)),
+								Value:     f64p(200),
+							},
+							Unit: "gE",
+						},
+						Label: "bar",
+						MinFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(int32(BandAlarmFrequencySpeedMultiple)),
+							Value:     f64p(10),
+						},
+						MaxFrequency: &models.ModelsBandAlarmFrequency{
+							ValueType: i32p(int32(BandAlarmFrequencySpeedMultiple)),
+							Value:     f64p(22),
+						},
+					},
+				},
+				HalAlarms: []*models.ModelsHALAlarm{},
+			},
+		},
+		{
+			given: &Threshold{
+				HALAlarms: []HALAlarm{
+					{
+						Label: "abc",
+						Bearing: &Bearing{
+							Manufacturer: "foo",
+							ModelNumber:  "bar",
+						},
+						HALAlarmType: HALAlarmTypeGlobal,
+						UpperDanger:  f64p(100),
+						UpperAlert:   f64p(50),
+					},
+					{
+						Label: "def",
+						Bearing: &Bearing{
+							Manufacturer: "bar",
+							ModelNumber:  "foo",
+						},
+						HALAlarmType: HALAlarmTypeFaultFrequency,
+						UpperDanger:  f64p(101),
+						UpperAlert:   f64p(51),
+					},
+				},
+			},
+			expected: models.ModelsSetPointAlarmThresholdRequest{
+				ThresholdType: i32p(0),
+				BandAlarms:    []*models.ModelsBandAlarm{},
+				HalAlarms: []*models.ModelsHALAlarm{
+					{
+						Bearing: &models.ModelsBearing{
+							Manufacturer: stringp("foo"),
+							ModelNumber:  stringp("bar"),
+						},
+						HalAlarmType: string(HALAlarmTypeGlobal),
+						Label:        "abc",
+						UpperAlert:   f64p(50),
+						UpperDanger:  f64p(100),
+					},
+					{
+						Bearing: &models.ModelsBearing{
+							Manufacturer: stringp("bar"),
+							ModelNumber:  stringp("foo"),
+						},
+						HalAlarmType: string(HALAlarmTypeFaultFrequency),
+						Label:        "def",
+						UpperAlert:   f64p(51),
+						UpperDanger:  f64p(101),
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -404,18 +556,4 @@ func Test_Threshold_ToInternal(t *testing.T) {
 			assert.Equal(t, test.expected, actual)
 		})
 	}
-}
-
-func Test_Threshold_ToInternal_IsNil(t *testing.T) {
-	t.Parallel()
-
-	assert.NotPanics(t, func() {
-		var threshold *Threshold
-
-		expected := models.ModelsSetPointAlarmThresholdRequest{}
-
-		actual := threshold.ToInternal()
-
-		assert.Equal(t, expected, actual)
-	})
 }

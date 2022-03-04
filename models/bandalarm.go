@@ -51,17 +51,19 @@ func (b *BandAlarm) FromInternal(internal *models.ModelsBandAlarm) {
 	}
 }
 
-func (b *BandAlarm) ToInternal() *models.ModelsBandAlarm {
-	if b == nil {
-		return nil
-	}
-
-	return &models.ModelsBandAlarm{
+func (b BandAlarm) ToInternal() *models.ModelsBandAlarm {
+	bandAlarm := &models.ModelsBandAlarm{
 		Label:            b.Label,
-		OverallThreshold: b.OverallThreshold.ToInternal(),
+		OverallThreshold: nil,
 		MinFrequency:     b.MinFrequency.ToInternal(),
 		MaxFrequency:     b.MaxFrequency.ToInternal(),
 	}
+
+	if b.OverallThreshold != nil {
+		bandAlarm.OverallThreshold = b.OverallThreshold.ToInternal()
+	}
+
+	return bandAlarm
 }
 
 func (b *BandAlarm) FromProto(buf []byte) error {
@@ -115,11 +117,7 @@ func (f *BandAlarmFrequency) FromInternalAlarmStatus(internal *models.ModelsGetA
 	}
 }
 
-func (f *BandAlarmFrequency) ToInternal() *models.ModelsBandAlarmFrequency {
-	if f == nil {
-		return nil
-	}
-
+func (f BandAlarmFrequency) ToInternal() *models.ModelsBandAlarmFrequency {
 	valueType := int32(f.ValueType)
 
 	return &models.ModelsBandAlarmFrequency{
@@ -158,16 +156,22 @@ func (b *BandAlarmOverallThreshold) FromInternal(internal *models.ModelsBandAlar
 	}
 }
 
-func (b *BandAlarmOverallThreshold) ToInternal() *models.ModelsBandAlarmOverallThreshold {
-	if b == nil {
-		return nil
+func (b BandAlarmOverallThreshold) ToInternal() *models.ModelsBandAlarmOverallThreshold {
+	threshold := &models.ModelsBandAlarmOverallThreshold{
+		Unit:        b.Unit,
+		UpperAlert:  nil,
+		UpperDanger: nil,
 	}
 
-	return &models.ModelsBandAlarmOverallThreshold{
-		Unit:        b.Unit,
-		UpperAlert:  b.UpperAlert.ToInternal(),
-		UpperDanger: b.UpperDanger.ToInternal(),
+	if b.UpperAlert != nil {
+		threshold.UpperAlert = b.UpperAlert.ToInternal()
 	}
+
+	if b.UpperDanger != nil {
+		threshold.UpperDanger = b.UpperDanger.ToInternal()
+	}
+
+	return threshold
 }
 
 func (b *BandAlarmOverallThreshold) FromProto(internal *pas.BandAlarmOverallThreshold) {
@@ -202,11 +206,7 @@ func (t *BandAlarmThreshold) FromInternal(internal *models.ModelsBandAlarmThresh
 	}
 }
 
-func (t *BandAlarmThreshold) ToInternal() *models.ModelsBandAlarmThreshold {
-	if t == nil {
-		return nil
-	}
-
+func (t BandAlarmThreshold) ToInternal() *models.ModelsBandAlarmThreshold {
 	valueType := int32(t.ValueType)
 
 	return &models.ModelsBandAlarmThreshold{

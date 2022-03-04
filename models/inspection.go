@@ -46,27 +46,19 @@ func (i *InspectionChoice) FromInternal(internal *models.ModelsInspectionChoice)
 	}
 }
 
-func (i *Inspection) ToInternal() *models.ModelsInspection {
-	if i == nil {
-		return nil
-	}
-
+func (i Inspection) ToInternal() *models.ModelsInspection {
 	inspection := &models.ModelsInspection{
-		Choices: make([]*models.ModelsInspectionChoice, 0, len(i.Choices)),
+		Choices: make([]*models.ModelsInspectionChoice, len(i.Choices)),
 	}
 
-	for _, choice := range i.Choices {
-		inspection.Choices = append(inspection.Choices, choice.ToInternal())
+	for i, choice := range i.Choices {
+		inspection.Choices[i] = choice.ToInternal()
 	}
 
 	return inspection
 }
 
-func (i *InspectionChoice) ToInternal() *models.ModelsInspectionChoice {
-	if i == nil {
-		return nil
-	}
-
+func (i InspectionChoice) ToInternal() *models.ModelsInspectionChoice {
 	status := int32(i.Status)
 
 	return &models.ModelsInspectionChoice{
