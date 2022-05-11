@@ -27,7 +27,7 @@ type ModelsBandAlarmThreshold struct {
 	// The type values are available [here](/v1/docs/service#band-alarm-threshold-value-type).
 	// Example: 1
 	// Required: true
-	// Maximum: 2
+	// Maximum: 3
 	// Minimum: 1
 	ValueType *int32 `json:"valueType"`
 }
@@ -69,7 +69,7 @@ func (m *ModelsBandAlarmThreshold) validateValueType(formats strfmt.Registry) er
 		return err
 	}
 
-	if err := validate.MaximumInt("valueType", "body", int64(*m.ValueType), 2, false); err != nil {
+	if err := validate.MaximumInt("valueType", "body", int64(*m.ValueType), 3, false); err != nil {
 		return err
 	}
 
