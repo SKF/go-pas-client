@@ -127,7 +127,7 @@ func (c *Client) UpdateAlarmStatus(
 		SetHeader("Accept", "application/json")
 
 	if measurement != nil {
-		request.WithJSONPayload(measurement.ToInternal())
+		request = request.WithJSONPayload(measurement.ToInternal())
 	}
 
 	_, err = c.Do(ctx, request)
