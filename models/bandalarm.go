@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	p "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/proto" //nolint:gci
 
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
@@ -73,7 +73,7 @@ func (b *BandAlarm) FromProto(buf []byte) error {
 
 	var internal pas.BandAlarm
 
-	if err := p.Unmarshal(buf, &internal); err != nil {
+	if err := proto.Unmarshal(buf, &internal); err != nil {
 		return fmt.Errorf("decoding band alarm failed: %w", err)
 	}
 

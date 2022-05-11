@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	p "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/proto" //nolint:gci
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	pas "github.com/SKF/proto/v2/pas"
@@ -71,7 +71,7 @@ func (i InspectionChoice) ToInternal() *models.ModelsInspectionChoice {
 func (i *Inspection) FromProto(buf []byte) error {
 	var internal pas.Inspection
 
-	if err := p.Unmarshal(buf, &internal); err != nil {
+	if err := proto.Unmarshal(buf, &internal); err != nil {
 		return fmt.Errorf("decoding inspection alarm failed: %w", err)
 	}
 

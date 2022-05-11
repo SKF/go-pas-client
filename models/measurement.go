@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	s "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt" //nolint:gci
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
@@ -53,8 +53,8 @@ func (m *Measurement) ToInternal() models.ModelsUpdateAlarmStatusRequest {
 	}
 
 	var (
-		measurementID = s.UUID(m.MeasurementID.String())
-		createdAt     = s.DateTime(m.CreatedAt)
+		measurementID = strfmt.UUID(m.MeasurementID.String())
+		createdAt     = strfmt.DateTime(m.CreatedAt)
 		contentType   = string(m.ContentType)
 	)
 
