@@ -670,7 +670,21 @@ func Test_UpdateAlarmStatus(t *testing.T) {
 
 	client := New(rest.WithBaseURL(server.URL))
 
-	err := client.UpdateAlarmStatus(context.TODO(), uuid.EmptyUUID, given)
+	err := client.UpdateAlarmStatus(context.TODO(), uuid.EmptyUUID, &given)
+	require.NoError(t, err)
+}
+
+func Test_UpdateAlarmStatus_EmptyBody(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	client := New(rest.WithBaseURL(server.URL))
+
+	err := client.UpdateAlarmStatus(context.TODO(), uuid.EmptyUUID, nil)
 	require.NoError(t, err)
 }
 
