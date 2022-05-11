@@ -158,7 +158,7 @@ func (a *api) updateAlarmStatus(ctx context.Context) error {
 		}
 	)
 
-	return a.client.UpdateAlarmStatus(ctx, a.nodeID, measurement)
+	return a.client.UpdateAlarmStatus(ctx, a.nodeID, &measurement)
 }
 
 func (a *api) setExternalAlarmStatus(ctx context.Context) error {
