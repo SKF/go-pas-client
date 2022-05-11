@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"google.golang.org/protobuf/proto"
+	p "google.golang.org/protobuf/proto"
 
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"
@@ -74,7 +74,7 @@ func (h *HALAlarm) FromProto(buf []byte) error {
 
 	var internal pas.HalAlarm
 
-	if err := proto.Unmarshal(buf, &internal); err != nil {
+	if err := p.Unmarshal(buf, &internal); err != nil {
 		return fmt.Errorf("decoding hal alarm failed: %w", err)
 	}
 

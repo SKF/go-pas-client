@@ -4,7 +4,7 @@ package models
 import (
 	"fmt"
 
-	"google.golang.org/protobuf/proto"
+	p "google.golang.org/protobuf/proto"
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	pas "github.com/SKF/proto/v2/pas"
@@ -47,7 +47,7 @@ func (r *RateOfChange) FromProto(buf []byte) error {
 
 	var internal pas.RateOfChange
 
-	if err := proto.Unmarshal(buf, &internal); err != nil {
+	if err := p.Unmarshal(buf, &internal); err != nil {
 		return fmt.Errorf("decoding rate of change alarm failed: %w", err)
 	}
 

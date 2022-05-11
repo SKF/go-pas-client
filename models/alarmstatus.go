@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/go-openapi/strfmt"
+	s "github.com/go-openapi/strfmt"
 
 	"github.com/SKF/go-pas-client/internal/events"
 	"github.com/SKF/go-pas-client/internal/models"
@@ -135,7 +135,7 @@ func (e *ExternalAlarmStatus) ToSetRequest() models.ModelsSetExternalAlarmStatus
 	}
 
 	if e.SetBy != nil {
-		setBy := strfmt.UUID(e.SetBy.String())
+		setBy := s.UUID(e.SetBy.String())
 
 		request.SetBy = &setBy
 	}
