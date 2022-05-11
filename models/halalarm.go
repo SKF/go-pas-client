@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/proto" //nolint:gci
 
 	"github.com/SKF/go-pas-client/internal/events"
 	models "github.com/SKF/go-pas-client/internal/models"

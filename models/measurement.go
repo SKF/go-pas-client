@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt" //nolint:gci
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"

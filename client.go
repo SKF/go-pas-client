@@ -17,6 +17,7 @@ type API interface {
 	PatchThreshold(context.Context, uuid.UUID, models.Patch) (models.Threshold, error)
 	GetAlarmStatus(context.Context, uuid.UUID) (models.AlarmStatus, error)
 	SetExternalAlarmStatus(context.Context, uuid.UUID, models.ExternalAlarmStatus) error
+	UpdateAlarmStatus(context.Context, uuid.UUID, *models.Measurement) error
 }
 
 type Client struct {
@@ -119,14 +120,15 @@ func (c *Client) GetAlarmStatus(ctx context.Context, nodeID uuid.UUID) (alarmSta
 func (c *Client) UpdateAlarmStatus(
 	ctx context.Context,
 	nodeID uuid.UUID,
-	measurement models.Measurement,
+	measurement *models.Measurement,
 ) (err error) {
-	payload := measurement.ToInternal()
-
 	request := rest.Put("v1/alarm-status/{nodeId}").
 		Assign("nodeId", nodeID).
-		WithJSONPayload(payload).
 		SetHeader("Accept", "application/json")
+
+	if measurement != nil {
+		request = request.WithJSONPayload(measurement.ToInternal())
+	}
 
 	_, err = c.Do(ctx, request)
 
