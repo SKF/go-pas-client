@@ -89,7 +89,7 @@ func (c *Client) PatchThreshold(ctx context.Context, nodeID uuid.UUID, patch mod
 	var response internal_models.ModelsGetPointAlarmThresholdResponse
 
 	if err := c.DoAndUnmarshal(ctx, request, &response); err != nil {
-		return models.Threshold{}, fmt.Errorf("getting threshold failed: %w", err)
+		return models.Threshold{}, fmt.Errorf("patching threshold failed: %w", err)
 	}
 
 	threshold := models.Threshold{} // nolint:exhaustivestruct

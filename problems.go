@@ -22,13 +22,6 @@ func (p *ProblemDecoder) DecodeProblem(ctx context.Context, r *http.Response) (p
 		)
 
 		return problem, err
-	case http.StatusInternalServerError:
-		var (
-			problem = problems.InternalProblem{}
-			err     = decoder.Decode(&problem)
-		)
-
-		return problem, err
 	default:
 		var (
 			problem = problems.BasicProblem{}
