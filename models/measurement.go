@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/go-openapi/strfmt" //nolint:gci
+	"github.com/go-openapi/strfmt"
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	"github.com/SKF/go-utility/v2/uuid"
@@ -49,7 +49,7 @@ type (
 
 func (m *Measurement) ToInternal() models.ModelsUpdateAlarmStatusRequest {
 	if m == nil {
-		return models.ModelsUpdateAlarmStatusRequest{} // nolint:exhaustivestruct
+		return models.ModelsUpdateAlarmStatusRequest{}
 	}
 
 	var (

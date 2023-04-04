@@ -1,10 +1,10 @@
-// nolint:dupl
+//nolint:dupl
 package models
 
 import (
 	"fmt"
 
-	"google.golang.org/protobuf/proto" //nolint:gci
+	"google.golang.org/protobuf/proto"
 
 	models "github.com/SKF/go-pas-client/internal/models"
 	pas "github.com/SKF/proto/v2/pas"
