@@ -24,7 +24,6 @@ type ThresholdEvent struct {
 	Threshold   Threshold
 }
 
-// nolint:cyclop
 func (t *ThresholdEvent) FromInternal(buf []byte) error {
 	if t == nil {
 		return nil

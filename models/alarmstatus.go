@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/go-openapi/strfmt" //nolint:gci
+	"github.com/go-openapi/strfmt"
 
 	"github.com/SKF/go-pas-client/internal/events"
 	"github.com/SKF/go-pas-client/internal/models"
@@ -124,7 +124,7 @@ func (e *ExternalAlarmStatus) FromEvent(internal *events.ExternalAlarm) {
 
 func (e *ExternalAlarmStatus) ToSetRequest() models.ModelsSetExternalAlarmStatusRequest {
 	if e == nil {
-		return models.ModelsSetExternalAlarmStatusRequest{} // nolint:exhaustivestruct
+		return models.ModelsSetExternalAlarmStatusRequest{}
 	}
 
 	status := int32(e.Status)

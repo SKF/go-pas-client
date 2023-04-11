@@ -57,7 +57,7 @@ func (c *Client) GetThreshold(ctx context.Context, nodeID uuid.UUID) (models.Thr
 		return models.Threshold{}, fmt.Errorf("getting threshold failed: %w", err)
 	}
 
-	threshold := models.Threshold{} // nolint:exhaustivestruct
+	threshold := models.Threshold{} //nolint:exhaustruct
 
 	if err := threshold.FromInternal(response); err != nil {
 		return models.Threshold{}, fmt.Errorf("converting threshold failed: %w", err)
@@ -92,7 +92,7 @@ func (c *Client) PatchThreshold(ctx context.Context, nodeID uuid.UUID, patch mod
 		return models.Threshold{}, fmt.Errorf("patching threshold failed: %w", err)
 	}
 
-	threshold := models.Threshold{} // nolint:exhaustivestruct
+	threshold := models.Threshold{}
 
 	if err := threshold.FromInternal(response); err != nil {
 		return models.Threshold{}, fmt.Errorf("converting threshold failed: %w", err)
