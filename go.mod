@@ -10,7 +10,7 @@ require (
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/strfmt v0.21.2
 	github.com/go-openapi/swag v0.21.1
-	github.com/go-openapi/validate v0.20.3
+	github.com/go-openapi/validate v0.22.1
 	github.com/stretchr/testify v1.8.2
 	github.com/wI2L/jsondiff v0.1.1
 	google.golang.org/protobuf v1.27.1
@@ -31,12 +31,11 @@ require (
 	github.com/aws/smithy-go v1.10.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a // indirect
-	github.com/go-openapi/analysis v0.20.0 // indirect
+	github.com/go-openapi/analysis v0.21.2 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
-	github.com/go-openapi/jsonreference v0.19.5 // indirect
-	github.com/go-openapi/loads v0.20.2 // indirect
-	github.com/go-openapi/runtime v0.19.24 // indirect
-	github.com/go-openapi/spec v0.20.3 // indirect
+	github.com/go-openapi/jsonreference v0.19.6 // indirect
+	github.com/go-openapi/loads v0.21.1 // indirect
+	github.com/go-openapi/spec v0.20.4 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
