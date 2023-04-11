@@ -6,8 +6,8 @@ replace github.com/SKF/go-pas-client => ../
 
 require (
 	github.com/SKF/go-pas-client v0.0.0-00010101000000-000000000000
-	github.com/SKF/go-rest-utility v0.9.0
-	github.com/SKF/go-utility/v2 v2.25.3
+	github.com/SKF/go-rest-utility v0.10.2
+	github.com/SKF/go-utility/v2 v2.29.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.36.0
 )
 
@@ -20,7 +20,7 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/SKF/go-enlight-middleware v0.4.0 // indirect
-	github.com/SKF/go-eventsource/v2 v2.12.1 // indirect
+	github.com/SKF/go-eventsource/v2 v2.13.0 // indirect
 	github.com/SKF/proto/v2 v2.18.0-go // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/aws/aws-sdk-go v1.35.30 // indirect
@@ -68,9 +68,9 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d // indirect
-	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20220118154757-00ab72f36ad5 // indirect
