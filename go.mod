@@ -13,7 +13,7 @@ require (
 	github.com/go-openapi/validate v0.22.1
 	github.com/stretchr/testify v1.8.2
 	github.com/wI2L/jsondiff v0.1.1
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
