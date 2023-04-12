@@ -29,13 +29,13 @@ linters-settings:
     # tokens count to trigger issue, 150 by default
     threshold: 150
   gosimple:
-    go: "1.17"
+    go: "1.19"
     checks: ["all"]
   staticcheck:
-    go: "1.17"
+    go: "1.19"
     checks: ["all"]
   stylecheck:
-    go: "1.17"
+    go: "1.19"
     checks: ["all"]
 
 issues:
