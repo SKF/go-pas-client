@@ -3,7 +3,7 @@ module github.com/SKF/go-pas-client
 go 1.19
 
 require (
-	github.com/SKF/go-eventsource/v2 v2.13.0
+	github.com/SKF/go-eventsource/v2 v2.13.1
 	github.com/SKF/go-rest-utility v0.13.1
 	github.com/SKF/go-utility/v2 v2.33.4
 	github.com/SKF/proto/v2 v2.19.0-go
