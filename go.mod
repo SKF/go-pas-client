@@ -3,7 +3,7 @@ module github.com/SKF/go-pas-client
 go 1.19
 
 require (
-	github.com/SKF/go-eventsource/v2 v2.13.0
+	github.com/SKF/go-eventsource/v2 v2.13.2
 	github.com/SKF/go-rest-utility v0.13.1
 	github.com/SKF/go-utility/v2 v2.33.4
 	github.com/SKF/proto/v2 v2.19.0-go
@@ -27,7 +27,7 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/SKF/go-enlight-middleware v0.8.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
-	github.com/aws/aws-sdk-go v1.44.241 // indirect
+	github.com/aws/aws-sdk-go v1.44.249 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.8 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.32 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.26 // indirect
