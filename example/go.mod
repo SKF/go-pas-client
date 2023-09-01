@@ -1,6 +1,6 @@
 module github.com/SKF/go-pas-client/example
 
-go 1.17
+go 1.19
 
 replace github.com/SKF/go-pas-client => ../
 
