@@ -27,8 +27,8 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 h1:d+Bc7a5rLufV
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/SKF/go-enlight-middleware v0.8.4 h1:zMQW8B/1aDzCKjIndjjKF3Aj7RZqteygIkISQZkw6xA=
 github.com/SKF/go-enlight-middleware v0.8.4/go.mod h1:WOYrp5saxf0Q2MXLDMNHr9NKqVBD45BKNdaGbB2NM7c=
-github.com/SKF/go-eventsource/v2 v2.13.2 h1:ANcrfTvkqHEQK1K3O6q4qzzuiSEVotfbNev1EyThwE0=
-github.com/SKF/go-eventsource/v2 v2.13.2/go.mod h1:ib1XFXVnKTNExz+zO/kZlrEMHonkYKqMLANt9ZFXZMk=
+github.com/SKF/go-eventsource/v2 v2.13.4 h1:7RnDiqprGoMmt5crejvJPB7Ka+2P1TlqA2sMQvFFvgo=
+github.com/SKF/go-eventsource/v2 v2.13.4/go.mod h1:2VThsf1GD83Y6sptWx9llPDumlBXoogu8c3FXxddQOE=
 github.com/SKF/go-rest-utility v0.13.2 h1:pdjp+raK+AXsmXQmIrX+/GtM7KV3leF9/p+hR224+h0=
 github.com/SKF/go-rest-utility v0.13.2/go.mod h1:khdIghVs608eafGuHU6/Hc2KOV4oaVVvuiSOb5VJGhY=
 github.com/SKF/go-utility/v2 v2.33.11 h1:3LJHV+76Imcmfn/xNs5liSeoZEUUow33QOD2B56O2bw=
@@ -39,8 +39,8 @@ github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kd
 github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
-github.com/aws/aws-sdk-go v1.44.330 h1:kO41s8I4hRYtWSIuMc/O053wmEGfMTT8D4KtPSojUkA=
-github.com/aws/aws-sdk-go v1.44.330/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
+github.com/aws/aws-sdk-go v1.45.0 h1:qoVOQHuLacxJMO71T49KeE70zm+Tk3vtrl7XO4VUPZc=
+github.com/aws/aws-sdk-go v1.45.0/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/aws/aws-sdk-go-v2 v1.18.0/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
 github.com/aws/aws-sdk-go-v2 v1.21.0 h1:gMT0IW+03wtYJhRqTVYn0wLzwdnK9sRMcxmtfGzRdJc=
 github.com/aws/aws-sdk-go-v2 v1.21.0/go.mod h1:/RfNgGmRxI+iFOB1OeJUyxiU+9s88k3pfHvDagGEp0M=
