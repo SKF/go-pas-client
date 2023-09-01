@@ -5,6 +5,8 @@
 # goimports -w -local github.com/SKF/go-pas-client <file>
 
 run:
+  deadline: 3m
+
   skip-dirs:
     - internal/models/
   skip-files:
