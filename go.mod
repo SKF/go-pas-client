@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/SKF/go-eventsource/v2 v2.13.4
-	github.com/SKF/go-rest-utility v0.13.2
+	github.com/SKF/go-rest-utility v0.13.3
 	github.com/SKF/go-utility/v2 v2.33.11
 	github.com/SKF/proto/v2 v2.19.0-go
 	github.com/go-openapi/errors v0.20.3
@@ -33,7 +33,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.21.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.41 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.35 // indirect
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.8 // indirect
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3 // indirect
 	github.com/aws/smithy-go v1.14.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
