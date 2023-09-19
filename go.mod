@@ -7,7 +7,7 @@ require (
 	github.com/SKF/go-rest-utility v0.13.4
 	github.com/SKF/go-utility/v2 v2.33.12
 	github.com/SKF/proto/v2 v2.19.0-go
-	github.com/go-openapi/errors v0.20.3
+	github.com/go-openapi/errors v0.20.4
 	github.com/go-openapi/strfmt v0.21.7
 	github.com/go-openapi/swag v0.22.3
 	github.com/go-openapi/validate v0.22.1
