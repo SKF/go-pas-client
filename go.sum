@@ -28,8 +28,8 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 h1:d+Bc7a5rLufV
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/SKF/go-enlight-middleware v0.8.5 h1:+23yE50gKVNrodQVoWbNcvV5zYWgfHAIFF1rUhjEK6Y=
 github.com/SKF/go-enlight-middleware v0.8.5/go.mod h1:OygaLyG8KsPuDMq3Tfu10S5Yd0chZGshdcpWwB5pBZU=
-github.com/SKF/go-eventsource/v2 v2.13.4 h1:7RnDiqprGoMmt5crejvJPB7Ka+2P1TlqA2sMQvFFvgo=
-github.com/SKF/go-eventsource/v2 v2.13.4/go.mod h1:2VThsf1GD83Y6sptWx9llPDumlBXoogu8c3FXxddQOE=
+github.com/SKF/go-eventsource/v2 v2.13.5 h1:vvGHP95JJ4fF+vDRGTCguSQsndvYSMpyAe348XaZOko=
+github.com/SKF/go-eventsource/v2 v2.13.5/go.mod h1:pdS24vqctRzA0S+fU8sO4oX5H0Bj1ifCh9xBUISMp8s=
 github.com/SKF/go-rest-utility v0.13.4 h1:KIoB+M+LwHFeOBjk/3LTkG4YDCyhRov405pkb7c/COE=
 github.com/SKF/go-rest-utility v0.13.4/go.mod h1:v7nZpEcbP6tecK8PI1RDzbdNbivNnLtBAy2PPH1eXFo=
 github.com/SKF/go-utility/v2 v2.33.12 h1:uuTj+p5VaRHxP+Q0ZO6a2XpLnBisoOCZixwNtpJRxcw=
@@ -40,8 +40,8 @@ github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kd
 github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
-github.com/aws/aws-sdk-go v1.45.11 h1:8qiSrA12+NRr+2MVpMApi3JxtiFFjDVU1NeWe+80bYg=
-github.com/aws/aws-sdk-go v1.45.11/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
+github.com/aws/aws-sdk-go v1.45.12 h1:+bKbbesGNPp+TeGrcqfrWuZoqcIEhjwKyBMHQPp80Jo=
+github.com/aws/aws-sdk-go v1.45.12/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/aws/aws-sdk-go-v2 v1.21.0 h1:gMT0IW+03wtYJhRqTVYn0wLzwdnK9sRMcxmtfGzRdJc=
 github.com/aws/aws-sdk-go-v2 v1.21.0/go.mod h1:/RfNgGmRxI+iFOB1OeJUyxiU+9s88k3pfHvDagGEp0M=
 github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.41 h1:22dGT7PneFMx4+b3pz7lMTRyN8ZKH7M2cW4GP9yUS2g=
